@@ -15,12 +15,12 @@ const AuthContext = createContext<{
 const useAuth = () => useContext(AuthContext);
 
 // --- Components ---
-const Logo = ({ className = "h-12", light = false }: { className?: string; light?: boolean }) => (
+const Logo = ({ className = "h-12", light = false, moss = false }: { className?: string; light?: boolean; moss?: boolean }) => (
   <div className={`flex flex-col items-center justify-center ${className}`}>
     <img
       src="/logo-jccoffee.png?v=2"
       alt="Jccoffee — logo com montanhas e o nome da marca"
-      className={`h-full w-auto object-contain ${light ? 'drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)]' : ''}`}
+      className={`h-full w-auto object-contain ${light ? 'drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)]' : ''} ${moss ? 'logo-tint-moss' : ''}`}
     />
   </div>
 );
@@ -33,7 +33,7 @@ const Navbar = ({ cartCount, onOpenCart, onOpenLogin }: { cartCount: number; onO
     <nav className="fixed top-0 w-full z-50 glass-nav">
       <div className="max-w-7xl mx-auto px-6 md:px-8 h-24 flex items-center justify-between">
         <a href="#home" className="hover:opacity-80 transition-opacity">
-          <Logo className="h-10 md:h-14" />
+          <Logo className="h-[3.75rem] md:h-[5.25rem]" moss />
         </a>
 
         <div className="hidden md:flex items-center gap-12 text-[11px] font-black uppercase tracking-[0.3em] text-coffee-brown/80">
