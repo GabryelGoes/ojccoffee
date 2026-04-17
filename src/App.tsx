@@ -18,7 +18,7 @@ const useAuth = () => useContext(AuthContext);
 const Logo = ({ className = "h-12", light = false }: { className?: string; light?: boolean }) => (
   <div className={`flex flex-col items-center justify-center ${className}`}>
     <img
-      src="/logo-jccoffee.png"
+      src="/logo-jccoffee.png?v=2"
       alt="Jccoffee — logo com montanhas e o nome da marca"
       className={`h-full w-auto object-contain ${light ? 'drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)]' : ''}`}
     />
