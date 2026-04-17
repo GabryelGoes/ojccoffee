@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Fraunces", serif;
+  --font-sans: "Bricolage Grotesque", sans-serif;
+
+  --color-coffee-dark: #0E370C;
+  --color-coffee-green: #1B4318;
+  --color-coffee-beige: #F5F2ED;
+  --color-coffee-brown: #3D2B1F;
+  --color-coffee-accent: #8B5E3C;
+  --color-coffee-orange: #D97706;
+}
+
+@layer base {
+  body {
+    @apply bg-coffee-beige text-coffee-brown font-sans antialiased selection:bg-coffee-dark selection:text-white text-lg md:text-xl;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif font-medium tracking-tight leading-[1.1];
+  }
+
+  h1 { @apply text-6xl md:text-8xl lg:text-9xl; }
+  h2 { @apply text-5xl md:text-7xl lg:text-8xl; }
+}
+
+.glass-nav {
+  @apply bg-coffee-beige/80 backdrop-blur-2xl border-b border-coffee-brown/10;
+}
+
+.btn-premium {
+  @apply bg-coffee-dark text-coffee-beige px-12 py-5 rounded-full font-bold transition-all duration-500 hover:bg-coffee-brown hover:-translate-y-1 active:scale-95 shadow-2xl shadow-coffee-dark/20;
+}
+
+.btn-minimal {
+  @apply border-2 border-coffee-brown text-coffee-brown px-12 py-5 rounded-full font-bold transition-all duration-500 hover:bg-coffee-brown hover:text-coffee-beige hover:-translate-y-1;
+}
+
+.kraft-texture {
+  background-image: url("https://www.transparenttextures.com/patterns/cardboard-flat.png");
+}
+
+.wood-texture {
+  background-image: url("https://www.transparenttextures.com/patterns/wood-pattern.png");
+}
+
+.grain-texture {
+  background-image: url("https://www.transparenttextures.com/patterns/natural-paper.png");
+}
+
+.coffee-shadow {
+  box-shadow: 0 30px 60px -12px rgba(14, 55, 12, 0.25);
+}

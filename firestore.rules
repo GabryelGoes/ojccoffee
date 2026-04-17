@@ -1,0 +1,82 @@
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// Collection: users
+// Fields: uid, email, displayName, photoURL, role, createdAt
+//
+// Collection: subscriptions
+// Fields: userId, planId, status, startDate, cyclesCompleted, paymentMethod
+//
+// Collection: deliveries
+// Fields: subscriptionId, userId, month, year, status, shippedAt
+//
+// ===============================================================
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+         (request.auth.token.email == "caiogoes1412@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email', 'role']) &&
+             data.uid is string &&
+             data.email is string &&
+             data.role in ['admin', 'customer'];
+    }
+
+    function isValidSubscription(data) {
+      return data.keys().hasAll(['userId', 'planId', 'status', 'startDate']) &&
+             data.userId is string &&
+             data.planId in ['primeiro-passo', 'o-caminho', 'as-alturas'] &&
+             data.status in ['active', 'pending', 'cancelled'];
+    }
+
+    function isValidDelivery(data) {
+      return data.keys().hasAll(['subscriptionId', 'userId', 'month', 'year', 'status']) &&
+             data.subscriptionId is string &&
+             data.userId is string &&
+             data.month is int && data.month >= 1 && data.month <= 12 &&
+             data.year is int &&
+             data.status in ['pending', 'shipped', 'delivered'];
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow create: if isAuthenticated() && isOwner(uid) && isValidUser(request.resource.data);
+      allow update: if isAdmin(); // Only admins can change roles
+    }
+
+    match /subscriptions/{subId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid && isValidSubscription(request.resource.data);
+      allow update: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid && request.resource.data.userId == resource.data.userId);
+    }
+
+    match /deliveries/{deliveryId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow write: if isAdmin();
+    }
+  }
+}

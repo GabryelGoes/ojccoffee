@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and role information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "customer"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Subscription": {
+      "title": "Subscription",
+      "description": "Details of a user's coffee subscription",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "planId": { "type": "string", "enum": ["primeiro-passo", "o-caminho", "as-alturas"] },
+        "status": { "type": "string", "enum": ["active", "pending", "cancelled"] },
+        "startDate": { "type": "string", "format": "date-time" },
+        "cyclesCompleted": { "type": "number" },
+        "paymentMethod": { "type": "string" },
+        "lastPaymentStatus": { "type": "string" }
+      },
+      "required": ["userId", "planId", "status", "startDate"]
+    },
+    "Delivery": {
+      "title": "Delivery",
+      "description": "Tracking of monthly coffee shipments",
+      "type": "object",
+      "properties": {
+        "subscriptionId": { "type": "string" },
+        "userId": { "type": "string" },
+        "month": { "type": "number" },
+        "year": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "shipped", "delivered"] },
+        "shippedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["subscriptionId", "userId", "month", "year", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/subscriptions/{subId}": {
+      "schema": "Subscription",
+      "description": "Active and past subscriptions"
+    },
+    "/deliveries/{deliveryId}": {
+      "schema": "Delivery",
+      "description": "Monthly shipment tracking"
+    }
+  }
+}
