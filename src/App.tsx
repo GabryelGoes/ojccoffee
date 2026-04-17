@@ -16,16 +16,12 @@ const useAuth = () => useContext(AuthContext);
 
 // --- Components ---
 const Logo = ({ className = "h-12", light = false }: { className?: string; light?: boolean }) => (
-  <div className={`flex flex-col items-center justify-center ${className} ${light ? 'text-coffee-beige' : 'text-coffee-dark'}`}>
-    <svg viewBox="0 0 400 240" className="h-full w-auto" fill="currentColor">
-      {/* Detailed Mountain Silhouette matching the original logo */}
-      <path d="M200,30 L225,85 L240,75 L270,110 L300,95 L340,140 L380,165 L20,165 L60,140 L100,100 L130,125 L160,85 L180,105 Z" />
-      {/* Inner details/shadows for the mountain */}
-      <path d="M200,30 L210,70 L190,90 L205,110 L195,130 L200,145 L185,135 L175,150 L160,85 Z" opacity="0.2" fill="black" />
-      <path d="M225,85 L235,105 L220,120 L230,140 L215,155 L225,165 L200,165 L210,70 Z" opacity="0.1" fill="black" />
-      
-      <text x="200" y="215" textAnchor="middle" fontFamily="sans-serif" fontWeight="600" fontSize="64" letterSpacing="-1">JCCoffee</text>
-    </svg>
+  <div className={`flex flex-col items-center justify-center ${className}`}>
+    <img
+      src="/logo-jccoffee.png"
+      alt="Jccoffee — logo com montanhas e o nome da marca"
+      className={`h-full w-auto object-contain ${light ? 'drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)]' : ''}`}
+    />
   </div>
 );
 
