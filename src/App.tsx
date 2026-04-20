@@ -436,10 +436,13 @@ const Story = () => (
         </h2>
         <div className="space-y-6 md:space-y-8 lg:space-y-10 text-coffee-beige/85 text-lg sm:text-xl md:text-2xl lg:text-3xl leading-relaxed font-medium italic text-pretty">
           <p>
-            "A tradição do café corre em nossas veias desde a minha bisavó. O que começou como uma lida diária na terra transformou-se em uma paixão por excelência."
+            Na JC COFFEE, acreditamos que cada xícara carrega tempo, origem e significado. Não se trata apenas do sabor — mas da atmosfera que ele cria, dos encontros que inspira e das histórias que desperta.
           </p>
           <p>
-            Após décadas, resgatamos esse legado para criar a JCCOFFEE. Uma marca que não vende apenas grãos, mas sim momentos de conexão e propósito.
+            Nossa essência nasce de uma herança real. Gerações que viveram do café, que encontraram nele sustento e propósito. Mesmo quando o tempo mudou os caminhos, a conexão permaneceu — silenciosa, mas presente.
+          </p>
+          <p>
+            Foi dessa memória que surgiu a JC COFFEE.
           </p>
         </div>
         <div className="mt-10 md:mt-14 w-24 md:w-28 h-[2px] bg-coffee-accent mx-auto" />
