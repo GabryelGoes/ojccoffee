@@ -410,8 +410,11 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
 };
 
 const Story = () => (
-  <section id="story" className="py-12 md:py-14 lg:py-16 px-6 md:px-8 bg-coffee-dark text-coffee-beige relative overflow-hidden">
-    <div className="absolute inset-0 z-0 opacity-20">
+  <section
+    id="story"
+    className="relative h-dvh min-h-dvh max-h-dvh flex flex-col items-center justify-center overflow-y-auto overflow-x-hidden px-6 md:px-10 py-8 md:py-12 bg-coffee-dark text-coffee-beige"
+  >
+    <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
       <img 
         src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&q=80&w=2070" 
         alt="Grãos de café — fundo da seção Nossa Herança" 
@@ -420,18 +423,18 @@ const Story = () => (
       />
     </div>
     
-    <div className="max-w-3xl mx-auto text-center relative z-10 px-1">
+    <div className="max-w-4xl mx-auto w-full text-center relative z-10 my-auto">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 1.2 }}
       >
-        <span className="text-coffee-accent uppercase tracking-[0.45em] text-[11px] md:text-[12px] font-black mb-3 md:mb-4 block">Nossa Herança</span>
-        <h2 className="text-coffee-beige mb-4 md:mb-6 text-2xl md:text-3xl lg:text-4xl font-serif leading-tight tracking-tight">
+        <span className="text-coffee-accent uppercase tracking-[0.5em] text-[12px] font-black mb-6 md:mb-8 block">Nossa Herança</span>
+        <h2 className="text-coffee-beige mb-8 md:mb-10 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif leading-[1.08] tracking-tight">
           Uma história real de fé e resiliência.
         </h2>
-        <div className="space-y-4 md:space-y-5 text-coffee-beige/85 text-base md:text-lg lg:text-xl leading-snug md:leading-relaxed font-medium italic">
+        <div className="space-y-6 md:space-y-8 lg:space-y-10 text-coffee-beige/85 text-lg sm:text-xl md:text-2xl lg:text-3xl leading-relaxed font-medium italic text-pretty">
           <p>
             "A tradição do café corre em nossas veias desde a minha bisavó. O que começou como uma lida diária na terra transformou-se em uma paixão por excelência."
           </p>
@@ -439,7 +442,7 @@ const Story = () => (
             Após décadas, resgatamos esse legado para criar a JCCOFFEE. Uma marca que não vende apenas grãos, mas sim momentos de conexão e propósito.
           </p>
         </div>
-        <div className="mt-8 md:mt-10 w-20 md:w-24 h-[2px] bg-coffee-accent mx-auto" />
+        <div className="mt-10 md:mt-14 w-24 md:w-28 h-[2px] bg-coffee-accent mx-auto" />
       </motion.div>
     </div>
   </section>
