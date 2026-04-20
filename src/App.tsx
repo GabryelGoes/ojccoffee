@@ -27,10 +27,39 @@ const Logo = ({ className = "h-12", light = false, moss = false }: { className?:
 
 const Navbar = ({ cartCount, onOpenCart, onOpenLogin }: { cartCount: number; onOpenCart: () => void; onOpenLogin: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const { user, profile } = useAuth();
 
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      // Keep navbar visible when menu is open (mobile UX).
+      if (isOpen) {
+        setIsVisible(true);
+        lastScrollY = currentScrollY;
+        return;
+      }
+
+      if (currentScrollY <= 20) {
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY + 8) {
+        setIsVisible(false);
+      } else if (currentScrollY < lastScrollY - 8) {
+        setIsVisible(true);
+      }
+
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isOpen]);
+
   return (
-    <nav className="fixed top-0 w-full z-50 glass-nav">
+    <nav className={`fixed top-0 w-full z-50 glass-nav transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
       <div className="max-w-7xl mx-auto px-6 md:px-8 h-[4.5rem] md:h-[6rem] flex items-center justify-between">
         <a href="#home" className="hover:opacity-80 transition-opacity shrink-0">
           <Logo className="h-[7.5rem] md:h-[10.5rem]" moss />
