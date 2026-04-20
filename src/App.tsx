@@ -31,7 +31,7 @@ const Navbar = ({ cartCount, onOpenCart, onOpenLogin }: { cartCount: number; onO
 
   return (
     <nav className="fixed top-0 w-full z-50 glass-nav">
-      <div className="max-w-7xl mx-auto px-6 md:px-8 min-h-[9rem] md:min-h-[12rem] py-3 md:py-4 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 md:px-8 h-[4.5rem] md:h-[6rem] flex items-center justify-between">
         <a href="#home" className="hover:opacity-80 transition-opacity shrink-0">
           <Logo className="h-[7.5rem] md:h-[10.5rem]" moss />
         </a>
