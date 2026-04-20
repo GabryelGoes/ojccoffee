@@ -333,17 +333,17 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
   ];
 
   return (
-    <section id="monte-club" className="py-32 md:py-48 px-6 md:px-8 bg-coffee-beige kraft-texture relative overflow-hidden">
+    <section id="monte-club" className="py-12 md:py-14 lg:py-16 px-6 md:px-8 bg-coffee-beige kraft-texture relative overflow-hidden">
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="text-center mb-20 md:mb-32">
-          <span className="text-coffee-accent uppercase tracking-[0.5em] text-[12px] font-black mb-6 md:mb-8 block">Assinatura</span>
-          <h2 className="text-4xl md:text-6xl text-coffee-dark mb-6 md:mb-8">Monte Club</h2>
-          <p className="text-coffee-brown/60 text-xl md:text-2xl font-medium max-w-2xl mx-auto italic">
+        <div className="text-center mb-6 md:mb-8 lg:mb-10">
+          <span className="text-coffee-accent uppercase tracking-[0.5em] text-[11px] md:text-[12px] font-black mb-2 md:mb-3 block">Assinatura</span>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl text-coffee-dark mb-2 md:mb-3">Monte Club</h2>
+          <p className="text-coffee-brown/60 text-base md:text-lg font-medium max-w-2xl mx-auto italic leading-snug">
             "Sua jornada de elevação através do café, entregue mensalmente na sua porta."
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 lg:gap-6 md:items-stretch">
           {plans.map((plan, idx) => (
             <motion.div
               key={idx}
@@ -351,40 +351,40 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.2, duration: 1 }}
-              className={`relative p-8 md:p-16 rounded-[2.5rem] md:rounded-[3rem] border ${plan.popular ? 'bg-coffee-dark text-coffee-beige border-transparent coffee-shadow' : 'bg-white/50 border-coffee-brown/10'} flex flex-col`}
+              className={`relative p-5 md:p-6 lg:p-7 rounded-2xl md:rounded-[1.75rem] border ${plan.popular ? 'bg-coffee-dark text-coffee-beige border-transparent coffee-shadow' : 'bg-white/50 border-coffee-brown/10'} flex flex-col`}
             >
               {plan.popular && (
-                <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-coffee-accent text-white text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] px-6 md:px-8 py-2 md:py-3 rounded-full whitespace-nowrap">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-coffee-accent text-white text-[8px] md:text-[9px] font-black uppercase tracking-[0.25em] px-4 md:px-5 py-1.5 md:py-2 rounded-full whitespace-nowrap">
                   Mais Escolhido
                 </div>
               )}
               
-              <h3 className={`text-3xl md:text-4xl font-serif mb-4 md:mb-6 ${plan.popular ? 'text-coffee-beige' : 'text-coffee-dark'}`}>{plan.name}</h3>
-              <p className={`text-base md:text-lg mb-8 md:mb-12 font-medium italic ${plan.popular ? 'text-coffee-beige/60' : 'text-coffee-brown/60'}`}>
+              <h3 className={`text-xl md:text-2xl font-serif mb-2 md:mb-3 leading-tight ${plan.popular ? 'text-coffee-beige' : 'text-coffee-dark'}`}>{plan.name}</h3>
+              <p className={`text-sm md:text-base mb-4 md:mb-5 font-medium italic leading-snug ${plan.popular ? 'text-coffee-beige/60' : 'text-coffee-brown/60'}`}>
                 {plan.description}
               </p>
               
-              <div className="mb-8 md:mb-12">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-base md:text-lg font-bold">R$</span>
-                  <span className="text-5xl md:text-6xl font-serif font-bold tracking-tighter">{plan.price}</span>
-                  <span className="text-xs md:text-sm font-medium uppercase tracking-widest opacity-60">/mês</span>
+              <div className="mb-4 md:mb-5">
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-sm md:text-base font-bold">R$</span>
+                  <span className="text-3xl md:text-4xl lg:text-[2.6rem] font-serif font-bold tracking-tighter leading-none">{plan.price}</span>
+                  <span className="text-[10px] md:text-xs font-medium uppercase tracking-widest opacity-60">/mês</span>
                 </div>
-                <p className="text-xs md:text-sm font-black uppercase tracking-widest mt-2 text-coffee-accent">{plan.shipping}</p>
+                <p className="text-[10px] md:text-xs font-black uppercase tracking-widest mt-1.5 text-coffee-accent">{plan.shipping}</p>
               </div>
 
-              <div className="space-y-4 md:space-y-6 mb-12 md:mb-16 flex-grow">
+              <div className="space-y-1.5 md:space-y-2 mb-5 md:mb-6 flex-grow">
                 {plan.features.map((feature, fIdx) => (
-                  <div key={fIdx} className="flex items-center gap-3 md:gap-4">
-                    <Check className={`w-4 h-4 md:w-5 md:h-5 shrink-0 ${plan.popular ? 'text-coffee-accent' : 'text-coffee-dark'}`} />
-                    <span className="text-xs md:text-sm font-medium tracking-tight">{feature}</span>
+                  <div key={fIdx} className="flex items-start gap-2 md:gap-2.5">
+                    <Check className={`w-3.5 h-3.5 md:w-4 md:h-4 shrink-0 mt-0.5 ${plan.popular ? 'text-coffee-accent' : 'text-coffee-dark'}`} />
+                    <span className="text-[11px] md:text-xs font-medium tracking-tight leading-tight">{feature}</span>
                   </div>
                 ))}
               </div>
 
               <button 
                 onClick={() => onAddToCart(plan)}
-                className={`w-full py-5 md:py-6 rounded-2xl text-xs md:text-sm font-black uppercase tracking-[0.3em] transition-all ${plan.popular ? 'bg-coffee-beige text-coffee-dark hover:bg-white' : 'bg-coffee-dark text-coffee-beige hover:bg-coffee-brown'}`}
+                className={`w-full py-3 md:py-3.5 rounded-xl text-[10px] md:text-[11px] font-black uppercase tracking-[0.25em] transition-all ${plan.popular ? 'bg-coffee-beige text-coffee-dark hover:bg-white' : 'bg-coffee-dark text-coffee-beige hover:bg-coffee-brown'}`}
               >
                 Assinar agora
               </button>
@@ -392,8 +392,8 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
           ))}
         </div>
 
-        <div className="mt-32 text-center">
-          <p className="text-coffee-brown/40 text-sm font-black uppercase tracking-[0.5em]">
+        <div className="mt-8 md:mt-10 text-center">
+          <p className="text-coffee-brown/40 text-xs md:text-sm font-black uppercase tracking-[0.35em] md:tracking-[0.5em]">
             Torra fresca garantida • Máximo 1 mês de torra
           </p>
         </div>
