@@ -870,14 +870,20 @@ export default function App() {
         setAuthError('CPF inválido. Confira os dígitos.');
         return;
       }
-      if (authPassword !== authPasswordConfirm) {
-        setAuthError('As senhas não coincidem.');
-        return;
-      }
     }
     if (authPassword.length < 6) {
       setAuthError('A senha precisa ter pelo menos 6 caracteres.');
       return;
+    }
+    if (authMode === 'signup') {
+      if (!authPasswordConfirm.trim()) {
+        setAuthError('Digite novamente a senha no campo de confirmação.');
+        return;
+      }
+      if (authPassword !== authPasswordConfirm) {
+        setAuthError('A senha e a confirmação não coincidem.');
+        return;
+      }
     }
 
     try {
@@ -1011,6 +1017,11 @@ export default function App() {
       : 'w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark';
   const authGridGap = authMode === 'signup' ? 'gap-1.5' : 'gap-2';
   const authFormSpace = authMode === 'signup' ? 'space-y-1.5' : 'space-y-2';
+  const signupPasswordMismatch =
+    authMode === 'signup' &&
+    authPassword.length > 0 &&
+    authPasswordConfirm.length > 0 &&
+    authPassword !== authPasswordConfirm;
 
   if (loading) {
     return (
@@ -1187,22 +1198,33 @@ export default function App() {
                           value={authPassword}
                           onChange={(e) => setAuthPassword(e.target.value)}
                           placeholder="Senha"
-                          className={authFieldClass}
+                          className={`${authFieldClass} ${signupPasswordMismatch ? 'border-red-400 ring-1 ring-red-200' : ''}`}
                           autoComplete="new-password"
                           minLength={6}
                           required
+                          aria-invalid={signupPasswordMismatch || undefined}
                         />
                         <input
                           type="password"
                           value={authPasswordConfirm}
                           onChange={(e) => setAuthPasswordConfirm(e.target.value)}
-                          placeholder="Confirmar"
-                          className={authFieldClass}
+                          placeholder="Confirmar senha"
+                          className={`${authFieldClass} ${signupPasswordMismatch ? 'border-red-400 ring-1 ring-red-200' : ''}`}
                           autoComplete="new-password"
                           minLength={6}
                           required
+                          aria-invalid={signupPasswordMismatch || undefined}
                         />
                       </div>
+                      {authMode === 'signup' &&
+                        authPassword.length > 0 &&
+                        authPasswordConfirm.length > 0 &&
+                        authPassword === authPasswordConfirm &&
+                        authPassword.length >= 6 && (
+                          <p id="auth-pwd-match-hint" className="text-[9px] leading-none text-green-700 font-medium -mt-1">
+                            Senhas conferem.
+                          </p>
+                        )}
                     </>
                   )}
                   {authMode === 'signin' && (
@@ -1233,7 +1255,11 @@ export default function App() {
                   )}
                   <button
                     type="submit"
-                    disabled={authLoading || (authMode === 'signup' && digitsOnly(authCpf).length === 11 && !isValidCpf(authCpf))}
+                    disabled={
+                      authLoading ||
+                      (authMode === 'signup' && digitsOnly(authCpf).length === 11 && !isValidCpf(authCpf)) ||
+                      signupPasswordMismatch
+                    }
                     className={`w-full btn-premium font-bold disabled:opacity-60 ${
                       authMode === 'signup' ? 'py-2 text-[11px] mt-0.5' : 'py-2.5 text-xs mt-1'
                     }`}
