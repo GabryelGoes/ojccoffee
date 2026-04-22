@@ -8,7 +8,7 @@ type CheckoutItem = {
 };
 
 type OrderBody = {
-  userId: string;
+  userId?: string;
   payerEmail: string;
   items: CheckoutItem[];
 };
@@ -23,9 +23,10 @@ export default async function handler(req: AnyRequest, res: AnyResponse) {
     }
 
     const body = req.body as OrderBody;
-    if (!body?.userId || !body?.payerEmail || !Array.isArray(body.items) || body.items.length === 0) {
+    if (!body?.payerEmail || !Array.isArray(body.items) || body.items.length === 0) {
       return res.status(400).json({ error: 'Payload inválido para criar pedido.' });
     }
+    const userId = body.userId || `guest-${crypto.randomUUID()}`;
 
     const supabase = readSupabaseAdminClient();
     const baseUrl = readBaseUrl(req);
@@ -36,7 +37,7 @@ export default async function handler(req: AnyRequest, res: AnyResponse) {
       const { data: order } = await supabase
         .from('orders')
         .insert({
-          user_id: body.userId,
+          user_id: userId,
           status: 'pending_payment',
           currency: 'BRL',
           subtotal_cents: subtotal,
@@ -59,7 +60,7 @@ export default async function handler(req: AnyRequest, res: AnyResponse) {
         await supabase.from('order_items').insert(mappedItems);
 
         await supabase.from('payments').insert({
-          user_id: body.userId,
+          user_id: userId,
           order_id: orderId,
           provider: 'mercado_pago',
           method: 'credit_card',

@@ -5,7 +5,7 @@ type SubscriptionBody = {
   planName: string;
   amount: number;
   payerEmail: string;
-  userId: string;
+  userId?: string;
 };
 
 export default async function handler(req: AnyRequest, res: AnyResponse) {
@@ -18,9 +18,10 @@ export default async function handler(req: AnyRequest, res: AnyResponse) {
     }
 
     const body = req.body as SubscriptionBody;
-    if (!body?.userId || !body?.payerEmail || !body?.planId || !body?.planName || !body?.amount) {
+    if (!body?.payerEmail || !body?.planId || !body?.planName || !body?.amount) {
       return res.status(400).json({ error: 'Payload inválido para assinatura.' });
     }
+    const userId = body.userId || `guest-${crypto.randomUUID()}`;
 
     const baseUrl = readBaseUrl(req);
     const supabase = readSupabaseAdminClient();
@@ -30,7 +31,7 @@ export default async function handler(req: AnyRequest, res: AnyResponse) {
       const { data, error } = await supabase
         .from('subscriptions')
         .insert({
-          user_id: body.userId,
+          user_id: userId,
           plan_code: body.planId,
           plan_name: body.planName,
           amount_cents: toCents(body.amount),

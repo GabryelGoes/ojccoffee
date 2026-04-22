@@ -678,21 +678,39 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
-  const addToCart = (item: any) => {
-    if (!user) {
-      setIsLoginOpen(true);
-      return;
+  const resolveCheckoutIdentity = () => {
+    if (user?.email) {
+      return {
+        userId: user.uid,
+        payerEmail: user.email,
+      };
     }
+
+    const typedEmail = window.prompt('Digite seu e-mail para continuar com o checkout:');
+    if (!typedEmail) return null;
+
+    const payerEmail = typedEmail.trim().toLowerCase();
+    const basicEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!basicEmailRegex.test(payerEmail)) {
+      alert('E-mail inválido. Tente novamente.');
+      return null;
+    }
+
+    return {
+      userId: `guest-${crypto.randomUUID()}`,
+      payerEmail,
+    };
+  };
+
+  const addToCart = (item: any) => {
     setSelectedPlan(item);
     setIsCommitmentOpen(true);
   };
 
   const confirmSubscription = async () => {
-    if (!selectedPlan || !user) return;
-    if (!user.email) {
-      alert('Seu usuário não possui e-mail. Faça login novamente para continuar.');
-      return;
-    }
+    if (!selectedPlan) return;
+    const identity = resolveCheckoutIdentity();
+    if (!identity) return;
 
     try {
       const amount = Number(String(selectedPlan.price).replace(',', '.'));
@@ -702,8 +720,8 @@ export default function App() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: user.uid,
-          payerEmail: user.email,
+          userId: identity.userId,
+          payerEmail: identity.payerEmail,
           planId: selectedPlan.id,
           planName: selectedPlan.name,
           amount,
@@ -729,10 +747,8 @@ export default function App() {
 
   const handleCheckout = async () => {
     if (cart.length === 0) return;
-    if (!user?.email) {
-      setIsLoginOpen(true);
-      return;
-    }
+    const identity = resolveCheckoutIdentity();
+    if (!identity) return;
 
     try {
       const items = cart.map(item => ({
@@ -748,8 +764,8 @@ export default function App() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: user.uid,
-          payerEmail: user.email,
+          userId: identity.userId,
+          payerEmail: identity.payerEmail,
           items,
         }),
       });

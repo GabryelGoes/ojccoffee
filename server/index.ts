@@ -13,11 +13,11 @@ type SubscriptionBody = {
   planName: string;
   amount: number;
   payerEmail: string;
-  userId: string;
+  userId?: string;
 };
 
 type OrderBody = {
-  userId: string;
+  userId?: string;
   payerEmail: string;
   items: CheckoutItem[];
 };
@@ -139,12 +139,13 @@ app.post('/api/payments/create-order', async (req, res) => {
     ensureMercadoPagoToken();
     const body = req.body as OrderBody;
 
-    if (!body?.userId || !body?.payerEmail || !Array.isArray(body.items) || body.items.length === 0) {
+    if (!body?.payerEmail || !Array.isArray(body.items) || body.items.length === 0) {
       return res.status(400).json({ error: 'Payload inválido para criar pedido.' });
     }
+    const userId = body.userId || `guest-${crypto.randomUUID()}`;
 
     const orderId = await maybeInsertOrderAndPayment({
-      userId: body.userId,
+      userId,
       payerEmail: body.payerEmail,
       items: body.items,
       provider: 'mercado_pago',
@@ -206,9 +207,10 @@ app.post('/api/payments/create-subscription', async (req, res) => {
     ensureMercadoPagoToken();
     const body = req.body as SubscriptionBody;
 
-    if (!body?.userId || !body?.payerEmail || !body?.planId || !body?.planName || !body?.amount) {
+    if (!body?.payerEmail || !body?.planId || !body?.planName || !body?.amount) {
       return res.status(400).json({ error: 'Payload inválido para assinatura.' });
     }
+    const userId = body.userId || `guest-${crypto.randomUUID()}`;
 
     let subscriptionId: string | null = null;
 
@@ -216,7 +218,7 @@ app.post('/api/payments/create-subscription', async (req, res) => {
       const { data, error } = await supabase
         .from('subscriptions')
         .insert({
-          user_id: body.userId,
+          user_id: userId,
           plan_code: body.planId,
           plan_name: body.planName,
           amount_cents: toCents(body.amount),
