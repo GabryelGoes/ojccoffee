@@ -14,6 +14,45 @@ const AuthContext = createContext<{
 
 const useAuth = () => useContext(AuthContext);
 
+/** Apenas dígitos */
+function digitsOnly(v: string) {
+  return v.replace(/\D/g, '');
+}
+
+/** Valida dígitos verificadores do CPF brasileiro */
+function isValidCpf(raw: string): boolean {
+  const d = digitsOnly(raw);
+  if (d.length !== 11) return false;
+  if (/^(\d)\1{10}$/.test(d)) return false;
+  let sum = 0;
+  for (let i = 0; i < 9; i++) sum += parseInt(d[i], 10) * (10 - i);
+  let mod = (sum * 10) % 11;
+  if (mod >= 10) mod = 0;
+  if (mod !== parseInt(d[9], 10)) return false;
+  sum = 0;
+  for (let i = 0; i < 10; i++) sum += parseInt(d[i], 10) * (11 - i);
+  mod = (sum * 10) % 11;
+  if (mod >= 10) mod = 0;
+  return mod === parseInt(d[10], 10);
+}
+
+function formatCpfMask(raw: string): string {
+  const d = digitsOnly(raw).slice(0, 11);
+  let s = '';
+  for (let i = 0; i < d.length; i++) {
+    if (i === 3 || i === 6) s += '.';
+    if (i === 9) s += '-';
+    s += d[i];
+  }
+  return s;
+}
+
+function formatCepMask(raw: string): string {
+  const d = digitsOnly(raw).slice(0, 8);
+  if (d.length <= 5) return d;
+  return `${d.slice(0, 5)}-${d.slice(5)}`;
+}
+
 // --- Components ---
 const Logo = ({
   className = 'h-12',
@@ -697,8 +736,11 @@ export default function App() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isCommitmentOpen, setIsCommitmentOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<any>(null);
-  const [authMode, setAuthMode] = useState<'signup' | 'signin'>('signup');
-  const [authFullName, setAuthFullName] = useState('');
+  const [authMode, setAuthMode] = useState<'signup' | 'signin'>('signin');
+  const [authCity, setAuthCity] = useState('');
+  const [authAddress, setAuthAddress] = useState('');
+  const [authCep, setAuthCep] = useState('');
+  const [authCpf, setAuthCpf] = useState('');
   const [authPhone, setAuthPhone] = useState('');
   const [authEmail, setAuthEmail] = useState('');
   const [authPassword, setAuthPassword] = useState('');
@@ -745,19 +787,33 @@ export default function App() {
     };
   };
 
-  const closeAuthModal = () => {
-    setIsLoginOpen(false);
-    setAuthError(null);
-    setAuthLoading(false);
+  const resetAuthFields = () => {
+    setAuthEmail('');
     setAuthPassword('');
     setAuthPasswordConfirm('');
+    setAuthCity('');
+    setAuthAddress('');
+    setAuthCep('');
+    setAuthCpf('');
+    setAuthPhone('');
+    setAuthError(null);
+  };
+
+  const closeAuthModal = () => {
+    setIsLoginOpen(false);
+    setAuthLoading(false);
+    resetAuthFields();
   };
 
   const handleOpenAuthForSubscription = () => {
-    setAuthMode('signup');
-    setAuthError(null);
-    setAuthPassword('');
-    setAuthPasswordConfirm('');
+    setAuthMode('signin');
+    resetAuthFields();
+    setIsLoginOpen(true);
+  };
+
+  const openLoginModal = () => {
+    setAuthMode('signin');
+    resetAuthFields();
     setIsLoginOpen(true);
   };
 
@@ -783,20 +839,41 @@ export default function App() {
   const handleEmailAuthSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const email = authEmail.trim().toLowerCase();
-    const fullName = authFullName.trim();
     const phone = authPhone.trim();
+    const city = authCity.trim();
+    const address = authAddress.trim();
+    const cepDigits = digitsOnly(authCep);
+    const cpfDigits = digitsOnly(authCpf);
 
     if (!email || !authPassword) {
       setAuthError('Preencha e-mail e senha.');
       return;
     }
-    if (authMode === 'signup' && !fullName) {
-      setAuthError('Informe seu nome completo para criar a conta.');
-      return;
-    }
-    if (authMode === 'signup' && authPassword !== authPasswordConfirm) {
-      setAuthError('As senhas não coincidem.');
-      return;
+    if (authMode === 'signup') {
+      if (!phone) {
+        setAuthError('Informe o telefone.');
+        return;
+      }
+      if (!city) {
+        setAuthError('Informe a cidade.');
+        return;
+      }
+      if (!address) {
+        setAuthError('Informe o endereço completo.');
+        return;
+      }
+      if (cepDigits.length !== 8) {
+        setAuthError('CEP deve ter 8 dígitos.');
+        return;
+      }
+      if (!isValidCpf(authCpf)) {
+        setAuthError('CPF inválido. Confira os dígitos.');
+        return;
+      }
+      if (authPassword !== authPasswordConfirm) {
+        setAuthError('As senhas não coincidem.');
+        return;
+      }
     }
     if (authPassword.length < 6) {
       setAuthError('A senha precisa ter pelo menos 6 caracteres.');
@@ -808,16 +885,19 @@ export default function App() {
       setAuthError(null);
       if (authMode === 'signup') {
         const credential = await signUpWithEmailPassword(email, authPassword);
-        if (fullName) {
-          await updateProfile(credential.user, { displayName: fullName });
-        }
+        const displayLabel = email.split('@')[0] || 'Cliente';
+        await updateProfile(credential.user, { displayName: displayLabel });
         await setDoc(
           doc(db, 'users', credential.user.uid),
           {
             uid: credential.user.uid,
             email,
-            displayName: fullName || credential.user.displayName || '',
-            phone: phone || null,
+            displayName: displayLabel,
+            phone,
+            cpf: cpfDigits,
+            cep: cepDigits,
+            city,
+            address,
             role: 'customer',
             createdAt: serverTimestamp(),
           },
@@ -826,11 +906,6 @@ export default function App() {
       } else {
         await signInWithEmailPassword(email, authPassword);
       }
-      setAuthFullName('');
-      setAuthPhone('');
-      setAuthEmail('');
-      setAuthPassword('');
-      setAuthPasswordConfirm('');
       closeAuthModal();
     } catch (error) {
       console.error('Erro na autenticação por e-mail:', error);
@@ -944,7 +1019,7 @@ export default function App() {
         <Navbar 
           cartCount={cart.length} 
           onOpenCart={() => setIsCartOpen(true)} 
-          onOpenLogin={() => setIsLoginOpen(true)}
+          onOpenLogin={openLoginModal}
         />
         
         {/* Login Modal */}
@@ -962,82 +1037,170 @@ export default function App() {
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="fixed inset-x-4 top-1/2 -translate-y-1/2 mx-auto w-full max-w-lg max-h-[min(92dvh,720px)] overflow-hidden bg-coffee-beige z-[110] rounded-2xl md:rounded-3xl px-5 py-5 md:px-7 md:py-6 text-center coffee-shadow flex flex-col"
+                className="fixed inset-x-4 top-1/2 -translate-y-1/2 mx-auto w-full max-w-lg max-h-[min(92dvh,800px)] overflow-hidden bg-coffee-beige z-[110] rounded-2xl md:rounded-3xl px-5 py-5 md:px-7 md:py-6 text-center coffee-shadow flex flex-col"
               >
                 <Logo className="h-[4.25rem] md:h-[5.25rem] mb-3 mx-auto shrink-0" premiumTint />
                 <h2 className="text-lg md:text-xl font-serif text-coffee-dark mb-1 leading-tight">
-                  {authMode === 'signup' ? 'Crie sua conta para assinar' : 'Entre na sua conta'}
+                  {authMode === 'signup' ? 'Crie sua conta' : 'Entre na sua conta'}
                 </h2>
-                <p className="text-coffee-brown/60 mb-3 text-xs md:text-sm leading-snug">
-                  Seus dados e acesso seguro.
+                <p className="text-coffee-brown/60 mb-3 text-xs md:text-sm leading-snug shrink-0">
+                  {authMode === 'signup'
+                    ? 'Preencha e-mail, telefone, CPF e endereço. CPF é validado automaticamente.'
+                    : 'Acesse com e-mail e senha ou use o Google.'}
                 </p>
 
-                <form onSubmit={handleEmailAuthSubmit} className="space-y-2 text-left mb-3 flex-1 min-h-0 flex flex-col">
+                <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden -mx-1 px-1">
+                <form onSubmit={handleEmailAuthSubmit} className="space-y-2 text-left mb-3 flex flex-col pb-1">
                   {authMode === 'signup' && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <input
+                          type="email"
+                          value={authEmail}
+                          onChange={(e) => setAuthEmail(e.target.value)}
+                          placeholder="E-mail"
+                          className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
+                          autoComplete="email"
+                          inputMode="email"
+                          required
+                        />
+                        <input
+                          type="tel"
+                          value={authPhone}
+                          onChange={(e) => setAuthPhone(e.target.value)}
+                          placeholder="Telefone / WhatsApp"
+                          className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
+                          autoComplete="tel"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <div className="relative">
+                          <input
+                            type="text"
+                            value={authCpf}
+                            onChange={(e) => setAuthCpf(formatCpfMask(e.target.value))}
+                            placeholder="CPF"
+                            className={`w-full bg-white border rounded-lg px-3 py-2 pr-10 text-sm text-coffee-dark ${
+                              digitsOnly(authCpf).length === 11
+                                ? isValidCpf(authCpf)
+                                  ? 'border-green-600 ring-1 ring-green-600/30'
+                                  : 'border-red-400 ring-1 ring-red-200'
+                                : 'border-coffee-brown/10'
+                            }`}
+                            autoComplete="off"
+                            inputMode="numeric"
+                            required
+                            maxLength={14}
+                            aria-invalid={digitsOnly(authCpf).length === 11 ? !isValidCpf(authCpf) : undefined}
+                            aria-describedby="auth-cpf-hint"
+                          />
+                          {digitsOnly(authCpf).length === 11 && isValidCpf(authCpf) && (
+                            <Check
+                              className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-green-600"
+                              strokeWidth={3}
+                              aria-hidden={true}
+                            />
+                          )}
+                        </div>
+                        <p id="auth-cpf-hint" className="mt-1 text-[10px] leading-tight text-coffee-brown/50">
+                          {digitsOnly(authCpf).length === 11
+                            ? isValidCpf(authCpf)
+                              ? 'CPF válido.'
+                              : 'CPF inválido — verifique os números.'
+                            : 'Digite os 11 dígitos do CPF.'}
+                        </p>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <input
+                          type="text"
+                          value={authCep}
+                          onChange={(e) => setAuthCep(formatCepMask(e.target.value))}
+                          placeholder="CEP"
+                          className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
+                          autoComplete="postal-code"
+                          inputMode="numeric"
+                          required
+                          maxLength={9}
+                        />
+                        <input
+                          type="text"
+                          value={authCity}
+                          onChange={(e) => setAuthCity(e.target.value)}
+                          placeholder="Cidade"
+                          className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
+                          autoComplete="address-level2"
+                          required
+                        />
+                      </div>
                       <input
                         type="text"
-                        value={authFullName}
-                        onChange={(e) => setAuthFullName(e.target.value)}
-                        placeholder="Nome completo"
+                        value={authAddress}
+                        onChange={(e) => setAuthAddress(e.target.value)}
+                        placeholder="Endereço completo (rua, número, complemento)"
                         className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
-                        autoComplete="name"
+                        autoComplete="street-address"
+                        required
+                      />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <input
+                          type="password"
+                          value={authPassword}
+                          onChange={(e) => setAuthPassword(e.target.value)}
+                          placeholder="Senha"
+                          className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
+                          autoComplete="new-password"
+                          minLength={6}
+                          required
+                        />
+                        <input
+                          type="password"
+                          value={authPasswordConfirm}
+                          onChange={(e) => setAuthPasswordConfirm(e.target.value)}
+                          placeholder="Confirmar senha"
+                          className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
+                          autoComplete="new-password"
+                          minLength={6}
+                          required
+                        />
+                      </div>
+                    </>
+                  )}
+                  {authMode === 'signin' && (
+                    <>
+                      <input
+                        type="email"
+                        value={authEmail}
+                        onChange={(e) => setAuthEmail(e.target.value)}
+                        placeholder="E-mail"
+                        className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
+                        autoComplete="email"
                         required
                       />
                       <input
-                        type="tel"
-                        value={authPhone}
-                        onChange={(e) => setAuthPhone(e.target.value)}
-                        placeholder="Telefone / WhatsApp"
-                        className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
-                        autoComplete="tel"
-                      />
-                    </div>
-                  )}
-                  <input
-                    type="email"
-                    value={authEmail}
-                    onChange={(e) => setAuthEmail(e.target.value)}
-                    placeholder="E-mail"
-                    className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
-                    autoComplete="email"
-                    required
-                  />
-                  <div className={authMode === 'signup' ? 'grid grid-cols-1 sm:grid-cols-2 gap-2' : ''}>
-                    <input
-                      type="password"
-                      value={authPassword}
-                      onChange={(e) => setAuthPassword(e.target.value)}
-                      placeholder="Senha"
-                      className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
-                      autoComplete={authMode === 'signup' ? 'new-password' : 'current-password'}
-                      minLength={6}
-                      required
-                    />
-                    {authMode === 'signup' && (
-                      <input
                         type="password"
-                        value={authPasswordConfirm}
-                        onChange={(e) => setAuthPasswordConfirm(e.target.value)}
-                        placeholder="Confirmar senha"
+                        value={authPassword}
+                        onChange={(e) => setAuthPassword(e.target.value)}
+                        placeholder="Senha"
                         className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
-                        autoComplete="new-password"
+                        autoComplete="current-password"
                         minLength={6}
                         required
                       />
-                    )}
-                  </div>
+                    </>
+                  )}
                   {authError && (
                     <p className="text-xs text-red-600 font-medium leading-tight">{authError}</p>
                   )}
                   <button
                     type="submit"
-                    disabled={authLoading}
+                    disabled={authLoading || (authMode === 'signup' && digitsOnly(authCpf).length === 11 && !isValidCpf(authCpf))}
                     className="w-full btn-premium py-2.5 text-xs mt-1 disabled:opacity-60"
                   >
                     {authLoading ? 'Processando...' : authMode === 'signup' ? 'Criar conta' : 'Entrar com e-mail'}
                   </button>
                 </form>
+                </div>
 
                 <div className="shrink-0 space-y-2">
                   <button 
@@ -1051,10 +1214,18 @@ export default function App() {
                 </div>
 
                 <button
+                  type="button"
                   onClick={() => {
                     setAuthError(null);
                     setAuthPassword('');
                     setAuthPasswordConfirm('');
+                    if (authMode === 'signup') {
+                      setAuthCity('');
+                      setAuthAddress('');
+                      setAuthCep('');
+                      setAuthCpf('');
+                      setAuthPhone('');
+                    }
                     setAuthMode(authMode === 'signup' ? 'signin' : 'signup');
                   }}
                   className="mt-3 text-[10px] font-black uppercase tracking-widest text-coffee-accent hover:opacity-70 transition-opacity"
