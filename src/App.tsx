@@ -527,7 +527,7 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
           </p>
         </div>
 
-        <div className="flex md:grid md:grid-cols-3 md:gap-4 lg:gap-5 md:items-stretch min-h-0 flex-1 gap-3 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-1 -mx-2 px-2 md:mx-0 md:px-0 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-coffee-brown/20">
+        <div className="flex md:grid md:grid-cols-3 md:gap-6 lg:gap-8 md:items-stretch min-h-0 flex-1 gap-4 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-2 -mx-2 px-2 md:mx-0 md:px-0 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-coffee-brown/25">
           {plans.map((plan, idx) => (
             <motion.div
               key={plan.id}
@@ -535,50 +535,101 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.12, duration: 0.75 }}
-              className={`relative flex flex-col min-h-0 shrink-0 w-[min(88vw,300px)] md:w-auto snap-center rounded-2xl md:rounded-[1.5rem] border p-4 md:p-5 ${
+              className={`group relative flex h-full min-h-[min(520px,78vh)] md:min-h-[480px] flex-col shrink-0 w-[min(88vw,320px)] md:w-auto snap-center rounded-[1.75rem] p-6 md:p-7 pt-9 transition-all duration-300 ${
                 plan.popular
-                  ? 'bg-coffee-dark text-coffee-beige border-transparent coffee-shadow'
-                  : 'bg-white/60 border-coffee-brown/10 backdrop-blur-sm'
+                  ? 'z-10 bg-gradient-to-b from-coffee-dark via-coffee-dark to-coffee-green text-coffee-beige shadow-[0_24px_48px_-12px_rgba(14,55,12,0.45)] ring-2 ring-coffee-accent/35 md:scale-[1.02] md:-my-1'
+                  : 'bg-white border border-coffee-brown/[0.12] shadow-[0_12px_40px_-8px_rgba(61,43,31,0.12)] hover:border-coffee-brown/20 hover:shadow-[0_16px_48px_-12px_rgba(61,43,31,0.18)]'
               }`}
             >
               {plan.popular && (
-                <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-coffee-accent text-white text-[7px] md:text-[8px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full whitespace-nowrap">
-                  Mais Escolhido
+                <div className="absolute -top-0 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full bg-coffee-accent px-4 py-1.5 text-[9px] font-black uppercase tracking-[0.28em] text-white shadow-md">
+                  Mais escolhido
                 </div>
               )}
 
-              <h3 className={`text-lg md:text-xl font-serif mb-1.5 leading-tight ${plan.popular ? 'text-coffee-beige' : 'text-coffee-dark'}`}>
-                {plan.name}
-              </h3>
-              <p className={`text-xs md:text-sm mb-3 font-medium italic leading-snug line-clamp-2 ${plan.popular ? 'text-coffee-beige/65' : 'text-coffee-brown/60'}`}>
-                {plan.description}
-              </p>
-
-              <div className="mb-3">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-xs font-bold">R$</span>
-                  <span className="text-2xl md:text-3xl font-serif font-bold tracking-tighter leading-none">{plan.price}</span>
-                  <span className="text-[9px] md:text-[10px] font-medium uppercase tracking-widest opacity-60">/mês</span>
+              <div className="mb-5 flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1 text-left">
+                  <h3
+                    className={`font-serif text-xl md:text-2xl font-medium leading-[1.15] tracking-tight ${
+                      plan.popular ? 'text-coffee-beige' : 'text-coffee-dark'
+                    }`}
+                  >
+                    {plan.name}
+                  </h3>
+                  <p
+                    className={`mt-2 text-sm leading-snug ${
+                      plan.popular ? 'text-coffee-beige/70' : 'text-coffee-brown/65'
+                    }`}
+                  >
+                    {plan.description}
+                  </p>
                 </div>
-                <p className="text-[9px] md:text-[10px] font-black uppercase tracking-widest mt-1 text-coffee-accent">{plan.shipping}</p>
+                <div
+                  className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${
+                    plan.popular ? 'bg-white/10 text-coffee-accent' : 'bg-coffee-beige text-coffee-dark'
+                  }`}
+                >
+                  <Coffee className="h-5 w-5" strokeWidth={2} aria-hidden />
+                </div>
               </div>
 
-              <div className="space-y-1 mb-3 flex-1 min-h-0 overflow-hidden">
-                {plan.features.map((feature, fIdx) => (
-                  <div key={fIdx} className="flex items-start gap-1.5">
-                    <Check className={`w-3 h-3 shrink-0 mt-0.5 ${plan.popular ? 'text-coffee-accent' : 'text-coffee-dark'}`} />
-                    <span className="text-[10px] md:text-[11px] font-medium tracking-tight leading-snug">{feature}</span>
-                  </div>
-                ))}
+              <div
+                className={`mb-5 rounded-2xl px-4 py-4 ${
+                  plan.popular ? 'bg-white/[0.08] ring-1 ring-white/10' : 'bg-coffee-beige/80 ring-1 ring-coffee-brown/[0.06]'
+                }`}
+              >
+                <div className="flex items-end justify-center gap-1">
+                  <span className={`pb-1 text-sm font-bold ${plan.popular ? 'text-coffee-beige/80' : 'text-coffee-brown/70'}`}>
+                    R$
+                  </span>
+                  <span className="font-serif text-4xl font-bold tabular-nums tracking-tight leading-none md:text-[2.75rem]">
+                    {plan.price}
+                  </span>
+                  <span className={`pb-1.5 text-xs font-semibold uppercase tracking-widest ${plan.popular ? 'text-coffee-beige/45' : 'text-coffee-brown/45'}`}>
+                    /mês
+                  </span>
+                </div>
+                <p
+                  className={`mt-3 text-center text-[10px] font-black uppercase tracking-[0.2em] ${
+                    plan.popular ? 'text-coffee-accent' : 'text-coffee-accent'
+                  }`}
+                >
+                  {plan.shipping}
+                </p>
               </div>
+
+              <ul
+                className={`mb-6 flex flex-1 flex-col gap-2.5 border-t pt-5 text-left ${
+                  plan.popular ? 'border-white/15' : 'border-coffee-brown/[0.1]'
+                }`}
+              >
+                {plan.features.map((feature, fIdx) => (
+                  <li key={fIdx} className="flex gap-3">
+                    <span
+                      className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
+                        plan.popular ? 'bg-coffee-accent/25 text-coffee-accent' : 'bg-coffee-dark/10 text-coffee-dark'
+                      }`}
+                    >
+                      <Check className="h-3 w-3" strokeWidth={3} aria-hidden />
+                    </span>
+                    <span
+                      className={`text-[13px] leading-snug md:text-sm ${
+                        plan.popular ? 'text-coffee-beige/90' : 'text-coffee-brown/85'
+                      }`}
+                    >
+                      {feature}
+                    </span>
+                  </li>
+                ))}
+              </ul>
 
               <button
                 type="button"
                 onClick={() => onAddToCart({ ...plan, kind: 'plan' })}
-                className={`w-full py-2.5 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-[0.22em] transition-all mt-auto ${
+                className={`mt-auto w-full rounded-2xl py-3.5 text-[10px] font-black uppercase tracking-[0.28em] transition-all ${
                   plan.popular
-                    ? 'bg-coffee-beige text-coffee-dark hover:bg-white'
-                    : 'bg-coffee-dark text-coffee-beige hover:bg-coffee-brown'
+                    ? 'bg-coffee-beige text-coffee-dark shadow-md hover:bg-white active:scale-[0.99]'
+                    : 'bg-coffee-dark text-coffee-beige shadow-md hover:bg-coffee-brown active:scale-[0.99]'
                 }`}
               >
                 Adicionar ao carrinho
