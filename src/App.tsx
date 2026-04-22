@@ -1057,7 +1057,7 @@ export default function App() {
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
                 className={`fixed mx-auto w-full bg-coffee-beige z-[110] rounded-2xl md:rounded-3xl text-center coffee-shadow flex flex-col overflow-hidden ${
                   authMode === 'signup'
-                    ? 'inset-x-3 top-3 bottom-3 max-h-[calc(100dvh-24px)] max-w-2xl px-4 py-4 sm:px-5 gap-3 min-h-0'
+                    ? 'inset-x-3 top-1/2 -translate-y-1/2 max-h-[min(calc(100dvh-24px),92dvh)] max-w-2xl px-4 pt-4 pb-3 sm:px-5 gap-2.5 min-h-0'
                     : 'inset-x-4 top-1/2 -translate-y-1/2 max-h-[min(92dvh,820px)] max-w-lg px-6 py-6 gap-4'
                 }`}
               >
@@ -1271,7 +1271,7 @@ export default function App() {
                 </form>
                 </div>
 
-                <div className={`flex flex-col shrink-0 w-full ${authMode === 'signup' ? 'gap-2.5' : 'gap-3'}`}>
+                <div className={`flex flex-col shrink-0 w-full ${authMode === 'signup' ? 'gap-2' : 'gap-3'}`}>
                   <button 
                     type="button"
                     onClick={handleAuthWithGoogle}
@@ -1284,7 +1284,7 @@ export default function App() {
                     {authMode === 'signup' ? 'Cadastrar com Google' : 'Entrar com Google'}
                   </button>
 
-                  <div className="flex flex-col items-center gap-1 pt-0.5">
+                  <div className="flex flex-col items-center gap-0.5">
                     <button
                       type="button"
                       onClick={() => {
