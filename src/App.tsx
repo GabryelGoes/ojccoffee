@@ -1077,17 +1077,11 @@ export default function App() {
                   >
                     {authMode === 'signup' ? 'Crie sua conta' : 'Entre na sua conta'}
                   </h2>
-                  <p
-                    className={`text-coffee-brown/55 leading-snug max-w-md mx-auto ${
-                      authMode === 'signup'
-                        ? 'text-[10px] md:text-[11px]'
-                        : 'text-xs md:text-sm'
-                    }`}
-                  >
-                    {authMode === 'signup'
-                      ? 'CPF validado automaticamente.'
-                      : 'E-mail e senha, ou Google.'}
-                  </p>
+                  {authMode !== 'signup' && (
+                    <p className="text-coffee-brown/55 leading-snug max-w-md mx-auto text-xs md:text-sm">
+                      E-mail e senha, ou Google.
+                    </p>
+                  )}
                 </div>
 
                 <div
