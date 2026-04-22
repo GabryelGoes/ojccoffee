@@ -322,7 +322,7 @@ const Hero = () => {
 const Origin = () => (
   <section
     id="origin"
-    className="snap-section relative min-h-[100dvh] max-h-[100dvh] flex flex-col justify-center overflow-hidden bg-coffee-beige kraft-texture px-5 py-10 md:py-12 lg:px-10"
+    className="snap-section relative min-h-[100dvh] max-h-none lg:max-h-[100dvh] flex flex-col justify-center overflow-x-hidden overflow-y-visible lg:overflow-hidden bg-coffee-beige kraft-texture px-5 py-10 md:py-12 lg:px-10"
   >
     <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 xl:gap-16 items-center relative z-10 min-h-0 flex-1">
       <motion.div
@@ -527,7 +527,7 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 lg:gap-5 md:items-stretch min-h-0 flex-1">
+        <div className="flex md:grid md:grid-cols-3 md:gap-4 lg:gap-5 md:items-stretch min-h-0 flex-1 gap-3 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-1 -mx-2 px-2 md:mx-0 md:px-0 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-coffee-brown/20">
           {plans.map((plan, idx) => (
             <motion.div
               key={plan.id}
@@ -535,7 +535,7 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.12, duration: 0.75 }}
-              className={`relative flex flex-col min-h-0 rounded-2xl md:rounded-[1.5rem] border p-4 md:p-5 ${
+              className={`relative flex flex-col min-h-0 shrink-0 w-[min(88vw,300px)] md:w-auto snap-center rounded-2xl md:rounded-[1.5rem] border p-4 md:p-5 ${
                 plan.popular
                   ? 'bg-coffee-dark text-coffee-beige border-transparent coffee-shadow'
                   : 'bg-white/60 border-coffee-brown/10 backdrop-blur-sm'
@@ -587,9 +587,12 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
           ))}
         </div>
 
-        <p className="mt-4 text-center text-coffee-brown/45 text-[9px] md:text-[10px] font-black uppercase tracking-[0.28em] shrink-0">
-          Torra fresca garantida · Máximo 1 mês de torra
-        </p>
+        <div className="mt-3 shrink-0 text-center space-y-1">
+          <p className="text-coffee-brown/45 text-[9px] md:text-[10px] font-black uppercase tracking-[0.28em]">
+            Torra fresca garantida · Máximo 1 mês de torra
+          </p>
+          <p className="text-[10px] text-coffee-brown/40 md:hidden">Deslize para ver os planos</p>
+        </div>
       </div>
     </section>
   );
