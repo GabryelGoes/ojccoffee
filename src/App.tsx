@@ -1013,10 +1013,10 @@ export default function App() {
 
   const authFieldClass =
     authMode === 'signup'
-      ? 'w-full bg-white border border-coffee-brown/10 rounded-md px-2 py-1.5 text-[13px] leading-snug text-coffee-dark min-w-0'
-      : 'w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark';
+      ? 'w-full bg-white border border-coffee-brown/10 rounded-lg px-2.5 py-1.5 text-[13px] leading-tight text-coffee-dark min-w-0 transition-[border-color,box-shadow] duration-150'
+      : 'w-full bg-white border border-coffee-brown/10 rounded-xl px-3 py-2.5 text-sm text-coffee-dark transition-[border-color,box-shadow] duration-150';
   const authGridGap = authMode === 'signup' ? 'gap-1.5' : 'gap-2';
-  const authFormSpace = authMode === 'signup' ? 'space-y-1.5' : 'space-y-2';
+  const authFormSpace = authMode === 'signup' ? 'space-y-1.5' : 'space-y-2.5';
   const signupPasswordMismatch =
     authMode === 'signup' &&
     authPassword.length > 0 &&
@@ -1057,49 +1057,49 @@ export default function App() {
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
                 className={`fixed mx-auto w-full bg-coffee-beige z-[110] rounded-2xl md:rounded-3xl text-center coffee-shadow flex flex-col overflow-hidden ${
                   authMode === 'signup'
-                    ? 'inset-x-3 top-3 bottom-3 max-h-[calc(100dvh-24px)] max-w-2xl px-4 py-3 md:px-6 md:py-4 justify-start min-h-0'
-                    : 'inset-x-4 top-1/2 -translate-y-1/2 max-h-[min(92dvh,800px)] max-w-lg px-5 py-5 md:px-7 md:py-6'
+                    ? 'inset-x-3 top-3 bottom-3 max-h-[calc(100dvh-24px)] max-w-2xl px-4 py-4 sm:px-5 gap-3 min-h-0'
+                    : 'inset-x-4 top-1/2 -translate-y-1/2 max-h-[min(92dvh,820px)] max-w-lg px-6 py-6 gap-4'
                 }`}
               >
-                <Logo
-                  className={
-                    authMode === 'signup'
-                      ? 'h-12 md:h-14 mb-1.5 mx-auto shrink-0'
-                      : 'h-[6.375rem] md:h-[7.875rem] mb-3 mx-auto shrink-0'
-                  }
-                  premiumTint
-                />
-                <h2
-                  className={`font-serif text-coffee-dark mb-0.5 leading-tight shrink-0 ${
-                    authMode === 'signup' ? 'text-base md:text-lg' : 'text-lg md:text-xl'
-                  }`}
-                >
-                  {authMode === 'signup' ? 'Crie sua conta' : 'Entre na sua conta'}
-                </h2>
-                <p
-                  className={`text-coffee-brown/60 leading-snug shrink-0 ${
-                    authMode === 'signup'
-                      ? 'mb-2 text-[10px] md:text-[11px] line-clamp-2'
-                      : 'mb-3 text-xs md:text-sm'
-                  }`}
-                >
-                  {authMode === 'signup'
-                    ? 'E-mail, telefone, CPF e endereço — validação automática do CPF.'
-                    : 'Acesse com e-mail e senha ou use o Google.'}
-                </p>
+                <div className={`flex flex-col items-center shrink-0 ${authMode === 'signup' ? 'gap-1' : 'gap-2'}`}>
+                  <Logo
+                    className={
+                      authMode === 'signup'
+                        ? 'h-12 md:h-14 mx-auto shrink-0'
+                        : 'h-[6.375rem] md:h-[7.875rem] mx-auto shrink-0'
+                    }
+                    premiumTint
+                  />
+                  <h2
+                    className={`font-serif text-coffee-dark leading-tight ${
+                      authMode === 'signup' ? 'text-base md:text-lg' : 'text-lg md:text-xl'
+                    }`}
+                  >
+                    {authMode === 'signup' ? 'Crie sua conta' : 'Entre na sua conta'}
+                  </h2>
+                  <p
+                    className={`text-coffee-brown/55 leading-snug max-w-md mx-auto ${
+                      authMode === 'signup'
+                        ? 'text-[10px] md:text-[11px]'
+                        : 'text-xs md:text-sm'
+                    }`}
+                  >
+                    {authMode === 'signup'
+                      ? 'CPF validado automaticamente.'
+                      : 'E-mail e senha, ou Google.'}
+                  </p>
+                </div>
 
                 <div
-                  className={`flex flex-col -mx-1 px-1 ${
+                  className={`w-full min-w-0 shrink-0 overflow-y-auto overscroll-contain ${
                     authMode === 'signup'
-                      ? 'shrink-0 flex-none overflow-hidden'
-                      : 'flex-1 min-h-0 overflow-y-auto overflow-x-hidden'
+                      ? 'max-h-[min(72dvh,640px)]'
+                      : 'max-h-[min(48dvh,400px)] pr-0.5 -mr-0.5'
                   }`}
                 >
                 <form
                   onSubmit={handleEmailAuthSubmit}
-                  className={`${authFormSpace} text-left flex flex-col min-h-0 pb-0 ${
-                    authMode === 'signup' ? 'mb-0' : 'mb-2'
-                  }`}
+                  className={`${authFormSpace} text-left flex flex-col w-full`}
                 >
                   {authMode === 'signup' && (
                     <>
@@ -1153,7 +1153,7 @@ export default function App() {
                             />
                           )}
                         </div>
-                        <p id="auth-cpf-hint" className="mt-0.5 text-[9px] leading-none text-coffee-brown/45">
+                        <p id="auth-cpf-hint" className="min-h-[12px] text-[9px] leading-none text-coffee-brown/45 text-left">
                           {digitsOnly(authCpf).length === 11
                             ? isValidCpf(authCpf)
                               ? 'CPF válido.'
@@ -1216,15 +1216,17 @@ export default function App() {
                           aria-invalid={signupPasswordMismatch || undefined}
                         />
                       </div>
-                      {authMode === 'signup' &&
-                        authPassword.length > 0 &&
-                        authPasswordConfirm.length > 0 &&
-                        authPassword === authPasswordConfirm &&
-                        authPassword.length >= 6 && (
-                          <p id="auth-pwd-match-hint" className="text-[9px] leading-none text-green-700 font-medium -mt-1">
-                            Senhas conferem.
-                          </p>
-                        )}
+                      <div className="min-h-[13px] text-left">
+                        {authMode === 'signup' &&
+                          authPassword.length > 0 &&
+                          authPasswordConfirm.length > 0 &&
+                          authPassword === authPasswordConfirm &&
+                          authPassword.length >= 6 && (
+                            <p id="auth-pwd-match-hint" className="text-[9px] leading-none text-green-700 font-semibold">
+                              Senhas conferem.
+                            </p>
+                          )}
+                      </div>
                     </>
                   )}
                   {authMode === 'signin' && (
@@ -1251,7 +1253,7 @@ export default function App() {
                     </>
                   )}
                   {authError && (
-                    <p className="text-xs text-red-600 font-medium leading-tight">{authError}</p>
+                    <p className="text-[11px] text-red-600 font-medium leading-snug">{authError}</p>
                   )}
                   <button
                     type="submit"
@@ -1260,8 +1262,8 @@ export default function App() {
                       (authMode === 'signup' && digitsOnly(authCpf).length === 11 && !isValidCpf(authCpf)) ||
                       signupPasswordMismatch
                     }
-                    className={`w-full btn-premium font-bold disabled:opacity-60 ${
-                      authMode === 'signup' ? 'py-2 text-[11px] mt-0.5' : 'py-2.5 text-xs mt-1'
+                    className={`w-full btn-premium font-bold tracking-wide disabled:opacity-60 ${
+                      authMode === 'signup' ? 'py-2.5 text-[11px]' : 'py-3 text-xs'
                     }`}
                   >
                     {authLoading ? 'Processando...' : authMode === 'signup' ? 'Criar conta' : 'Entrar com e-mail'}
@@ -1269,44 +1271,48 @@ export default function App() {
                 </form>
                 </div>
 
-                <div className={`shrink-0 ${authMode === 'signup' ? 'space-y-1.5 -mt-1' : 'space-y-2'}`}>
+                <div className={`flex flex-col shrink-0 w-full ${authMode === 'signup' ? 'gap-2.5' : 'gap-3'}`}>
                   <button 
                     type="button"
                     onClick={handleAuthWithGoogle}
                     disabled={authLoading}
-                    className={`w-full flex items-center justify-center gap-2 bg-white border border-coffee-brown/10 rounded-xl text-coffee-dark font-bold hover:bg-coffee-beige transition-all disabled:opacity-60 ${
+                    className={`w-full flex items-center justify-center gap-2 bg-white border border-coffee-brown/15 rounded-xl text-coffee-dark font-bold hover:bg-white/90 transition-colors disabled:opacity-60 shadow-sm ${
                       authMode === 'signup' ? 'py-2 text-xs' : 'py-2.5 text-sm'
                     }`}
                   >
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" className={authMode === 'signup' ? 'w-4 h-4' : 'w-5 h-5'} />
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" className={authMode === 'signup' ? 'w-4 h-4 shrink-0' : 'w-5 h-5 shrink-0'} />
                     {authMode === 'signup' ? 'Cadastrar com Google' : 'Entrar com Google'}
                   </button>
-                </div>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    setAuthError(null);
-                    setAuthPassword('');
-                    setAuthPasswordConfirm('');
-                    if (authMode === 'signup') {
-                      setAuthCity('');
-                      setAuthAddress('');
-                      setAuthCep('');
-                      setAuthCpf('');
-                      setAuthPhone('');
-                    }
-                    setAuthMode(authMode === 'signup' ? 'signin' : 'signup');
-                  }}
-                  className={`text-[10px] font-black uppercase tracking-widest text-coffee-accent hover:opacity-70 transition-opacity ${
-                    authMode === 'signup' ? 'mt-2' : 'mt-3'
-                  }`}
-                >
-                  {authMode === 'signup' ? 'Já tenho conta' : 'Quero criar conta'}
-                </button>
-                <button onClick={closeAuthModal} className={`text-[9px] uppercase font-black tracking-widest text-coffee-brown/40 hover:text-coffee-dark transition-colors ${authMode === 'signup' ? 'mt-1' : 'mt-2'}`}>
-                  Voltar ao site
-                </button>
+                  <div className="flex flex-col items-center gap-1 pt-0.5">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAuthError(null);
+                        setAuthPassword('');
+                        setAuthPasswordConfirm('');
+                        if (authMode === 'signup') {
+                          setAuthCity('');
+                          setAuthAddress('');
+                          setAuthCep('');
+                          setAuthCpf('');
+                          setAuthPhone('');
+                        }
+                        setAuthMode(authMode === 'signup' ? 'signin' : 'signup');
+                      }}
+                      className="text-[10px] font-black uppercase tracking-widest text-coffee-accent hover:opacity-75 transition-opacity py-0.5"
+                    >
+                      {authMode === 'signup' ? 'Já tenho conta' : 'Quero criar conta'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={closeAuthModal}
+                      className="text-[9px] uppercase font-black tracking-widest text-coffee-brown/45 hover:text-coffee-dark transition-colors py-0.5"
+                    >
+                      Voltar ao site
+                    </button>
+                  </div>
+                </div>
               </motion.div>
             </>
           )}
