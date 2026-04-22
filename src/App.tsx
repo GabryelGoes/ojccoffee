@@ -15,13 +15,48 @@ const AuthContext = createContext<{
 const useAuth = () => useContext(AuthContext);
 
 // --- Components ---
-const Logo = ({ className = "h-12", light = false, moss = false }: { className?: string; light?: boolean; moss?: boolean }) => (
+const Logo = ({
+  className = 'h-12',
+  light = false,
+  moss = false,
+  premiumTint = false,
+}: {
+  className?: string;
+  light?: boolean;
+  moss?: boolean;
+  /** Tom idêntico ao botão premium (`bg-coffee-dark`), só para o modal de auth */
+  premiumTint?: boolean;
+}) => (
   <div className={`flex flex-col items-center justify-center ${className}`}>
-    <img
-      src="/logo-jccoffee.png?v=2"
-      alt="Jccoffee — logo com montanhas e o nome da marca"
-      className={`h-full w-auto object-contain ${light ? 'drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)]' : ''} ${moss ? 'logo-tint-moss' : ''}`}
-    />
+    {premiumTint ? (
+      <div
+        className="relative h-full w-fit mx-auto"
+        role="img"
+        aria-label="Jccoffee — logo com montanhas e o nome da marca"
+      >
+        <img src="/logo-jccoffee.png?v=2" alt="" className="h-full w-auto object-contain opacity-0 pointer-events-none select-none" />
+        <div
+          className={`absolute inset-0 bg-coffee-dark ${light ? 'drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)]' : ''}`}
+          style={{
+            WebkitMaskImage: 'url(/logo-jccoffee.png?v=2)',
+            maskImage: 'url(/logo-jccoffee.png?v=2)',
+            WebkitMaskSize: 'contain',
+            maskSize: 'contain',
+            WebkitMaskRepeat: 'no-repeat',
+            maskRepeat: 'no-repeat',
+            WebkitMaskPosition: 'center',
+            maskPosition: 'center',
+          }}
+          aria-hidden={true}
+        />
+      </div>
+    ) : (
+      <img
+        src="/logo-jccoffee.png?v=2"
+        alt="Jccoffee — logo com montanhas e o nome da marca"
+        className={`h-full w-auto object-contain ${light ? 'drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)]' : ''} ${moss ? 'logo-tint-moss' : ''}`}
+      />
+    )}
   </div>
 );
 
@@ -929,7 +964,7 @@ export default function App() {
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
                 className="fixed inset-x-4 top-1/2 -translate-y-1/2 mx-auto w-full max-w-lg max-h-[min(92dvh,720px)] overflow-hidden bg-coffee-beige z-[110] rounded-2xl md:rounded-3xl px-5 py-5 md:px-7 md:py-6 text-center coffee-shadow flex flex-col"
               >
-                <Logo className="h-11 md:h-12 mb-3 mx-auto shrink-0" />
+                <Logo className="h-[4.25rem] md:h-[5.25rem] mb-3 mx-auto shrink-0" premiumTint />
                 <h2 className="text-lg md:text-xl font-serif text-coffee-dark mb-1 leading-tight">
                   {authMode === 'signup' ? 'Crie sua conta para assinar' : 'Entre na sua conta'}
                 </h2>
