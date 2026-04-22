@@ -621,20 +621,20 @@ const Story = () => (
         transition={{ duration: 1 }}
         className="flex flex-col justify-center min-h-0 py-2"
       >
-        <span className="text-coffee-accent uppercase tracking-[0.45em] text-[10px] md:text-[11px] font-black mb-4 md:mb-5 block shrink-0">
+        <span className="text-coffee-accent uppercase tracking-[0.45em] text-[11px] md:text-xs font-black mb-4 md:mb-5 block shrink-0">
           Nossa Herança
         </span>
-        <h2 className="text-coffee-beige mb-5 md:mb-6 text-[clamp(1.35rem,4.5vmin,3.25rem)] font-serif leading-[1.12] tracking-tight font-medium shrink-0 text-balance">
+        <h2 className="text-coffee-beige mb-5 md:mb-7 text-[clamp(1.65rem,5.25vmin,3.85rem)] font-serif leading-[1.12] tracking-tight font-medium shrink-0 text-balance">
           O café é mais do que um hábito. É uma experiência.
         </h2>
-        <div className="space-y-4 md:space-y-[1.125rem] text-coffee-beige/88 text-[clamp(0.8rem,2vmin,1.2rem)] leading-relaxed font-medium text-pretty text-balance min-h-0 text-left md:text-center">
+        <div className="space-y-5 md:space-y-6 text-coffee-beige/88 text-[clamp(1rem,2.65vmin,1.45rem)] md:text-[clamp(1.05rem,2.35vmin,1.5rem)] leading-relaxed font-medium text-pretty text-balance min-h-0 text-left md:text-center">
           <p className="italic">
             Na JC COFFEE, acreditamos que cada xícara carrega tempo, origem e significado. Não se trata apenas do sabor — mas da atmosfera que ele cria, dos encontros que inspira e das histórias que desperta.
           </p>
           <p className="italic">
             Nossa essência nasce de uma herança real. Gerações que viveram do café, que encontraram nele sustento e propósito. Mesmo quando o tempo mudou os caminhos, a conexão permaneceu — silenciosa, mas presente.
           </p>
-          <p className="text-coffee-beige font-serif not-italic text-[clamp(1rem,2.4vmin,1.45rem)] pt-1">
+          <p className="text-coffee-beige font-serif not-italic text-[clamp(1.2rem,3vmin,1.75rem)] pt-1">
             Foi dessa memória que surgiu a JC COFFEE.
           </p>
           <p className="not-italic leading-relaxed">
