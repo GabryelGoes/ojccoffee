@@ -1,9 +1,19 @@
 import React, { useState, useRef, useEffect, createContext, useContext } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
-import { Coffee, MapPin, ArrowRight, Instagram, Menu, X, Check, Star, Shield, Zap, Heart, ShoppingBag, User, LogOut, LayoutDashboard, Package, Users, Calendar, ExternalLink } from 'lucide-react';
+import { Coffee, MapPin, ArrowRight, Instagram, Menu, X, Check, Star, Zap, Heart, ShoppingBag, User, LogOut, LayoutDashboard, Package, Users, Calendar, ExternalLink, Mail, Phone } from 'lucide-react';
 import { auth, db, signInWithGoogle, signInWithEmailPassword, signUpWithEmailPassword, logout, ensureUserProfile } from './firebase';
 import { onAuthStateChanged, updateProfile, User as FirebaseUser } from 'firebase/auth';
 import { doc, getDoc, setDoc, collection, onSnapshot, query, where, serverTimestamp, updateDoc, getDocs } from 'firebase/firestore';
+
+/**
+ * Contato do modal "Contato" no cabeçalho — altere para seus dados reais.
+ * CONTACT_PHONE_E164: formato internacional para link tel: (ex: +5548999999999)
+ * CONTACT_WHATSAPP_DIGITS: só dígitos com DDI 55 (ex: 5548999999999) para wa.me
+ */
+const CONTACT_EMAIL = 'contato@jccoffee.com.br';
+const CONTACT_PHONE_LABEL = '(00) 00000-0000';
+const CONTACT_PHONE_E164 = '+5500000000000';
+const CONTACT_WHATSAPP_DIGITS = '5500000000000';
 
 // --- Context ---
 const AuthContext = createContext<{
@@ -99,7 +109,17 @@ const Logo = ({
   </div>
 );
 
-const Navbar = ({ cartCount, onOpenCart, onOpenLogin }: { cartCount: number; onOpenCart: () => void; onOpenLogin: () => void }) => {
+const Navbar = ({
+  cartCount,
+  onOpenCart,
+  onOpenLogin,
+  onOpenContact,
+}: {
+  cartCount: number;
+  onOpenCart: () => void;
+  onOpenLogin: () => void;
+  onOpenContact: () => void;
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const { user, profile } = useAuth();
@@ -174,23 +194,31 @@ const Navbar = ({ cartCount, onOpenCart, onOpenLogin }: { cartCount: number; onO
             </button>
           )}
 
-          <button 
+          <button
+            type="button"
+            onClick={onOpenContact}
+            className="flex items-center gap-2 px-2.5 md:px-3 py-2 rounded-full border border-coffee-brown/15 text-coffee-dark text-[10px] font-black uppercase tracking-widest hover:bg-white/60 transition-colors"
+            title="Contato"
+          >
+            <Mail size={18} strokeWidth={2.25} />
+            <span className="hidden md:inline">Contato</span>
+          </button>
+
+          <button
+            type="button"
             onClick={onOpenCart}
             className="relative p-2 text-coffee-dark hover:opacity-70 transition-opacity"
+            title="Carrinho"
           >
             <ShoppingBag size={24} />
             {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-coffee-accent text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">
-                {cartCount}
+              <span className="absolute -top-1 -right-1 bg-coffee-accent text-white text-[10px] font-bold min-w-[1.25rem] h-5 px-1 flex items-center justify-center rounded-full">
+                {cartCount > 99 ? '99+' : cartCount}
               </span>
             )}
           </button>
 
-          <button className="hidden md:block btn-premium text-[10px] uppercase tracking-widest px-10 py-4">
-            Assinar agora
-          </button>
-
-          <button className="md:hidden text-coffee-dark" onClick={() => setIsOpen(!isOpen)}>
+          <button type="button" className="md:hidden text-coffee-dark" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
@@ -210,7 +238,26 @@ const Navbar = ({ cartCount, onOpenCart, onOpenLogin }: { cartCount: number; onO
               <a href="#products" onClick={() => setIsOpen(false)} className="text-3xl font-serif font-bold">Cafés</a>
               <a href="#monte-club" onClick={() => setIsOpen(false)} className="text-3xl font-serif font-bold">Monte Club</a>
               <a href="#story" onClick={() => setIsOpen(false)} className="text-3xl font-serif font-bold">Nossa História</a>
-              <button className="btn-premium w-full text-xl">Comprar agora</button>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsOpen(false);
+                  onOpenContact();
+                }}
+                className="btn-minimal w-full text-xl py-5 border-coffee-brown/30"
+              >
+                Contato
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsOpen(false);
+                  onOpenCart();
+                }}
+                className="btn-premium w-full text-xl"
+              >
+                Ver carrinho {cartCount > 0 ? `(${cartCount})` : ''}
+              </button>
             </div>
           </motion.div>
         )}
@@ -311,26 +358,32 @@ const Origin = () => (
   </section>
 );
 
-const Products = () => {
+const Products = ({ onAddToCart }: { onAddToCart: (item: Record<string, unknown>) => void }) => {
   const products = [
     {
-      name: "Cafarnaum",
-      notes: "Chocolate, Avelã e Frutas Vermelhas",
-      image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&q=80&w=2070",
-      tag: "O Princípio"
+      id: 'cafarnaum',
+      name: 'Cafarnaum',
+      notes: 'Chocolate, Avelã e Frutas Vermelhas',
+      price: '54,90',
+      image: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&q=80&w=2070',
+      tag: 'O Princípio',
     },
     {
-      name: "Carmelo",
-      notes: "Mel Silvestre, Floral e Notas Cítricas",
-      image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=2070",
-      tag: "Elevação"
+      id: 'carmelo',
+      name: 'Carmelo',
+      notes: 'Mel Silvestre, Floral e Notas Cítricas',
+      price: '54,90',
+      image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=2070',
+      tag: 'Elevação',
     },
     {
-      name: "Sinai",
-      notes: "Castanhas, Amêndoas e Corpo Intenso",
-      image: "https://images.unsplash.com/photo-1497933322477-911f0cbb5b53?auto=format&fit=crop&q=80&w=2070",
-      tag: "A Lei"
-    }
+      id: 'sinai',
+      name: 'Sinai',
+      notes: 'Castanhas, Amêndoas e Corpo Intenso',
+      price: '54,90',
+      image: 'https://images.unsplash.com/photo-1497933322477-911f0cbb5b53?auto=format&fit=crop&q=80&w=2070',
+      tag: 'A Lei',
+    },
   ];
 
   return (
@@ -344,7 +397,7 @@ const Products = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-20">
           {products.map((product, idx) => (
             <motion.div 
-              key={idx}
+              key={product.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -364,9 +417,22 @@ const Products = () => {
               </div>
               <div className="text-center">
                 <h3 className="text-4xl font-serif text-coffee-dark mb-4">{product.name}</h3>
-                <p className="text-coffee-brown/60 text-lg italic mb-12 font-medium">{product.notes}</p>
-                <button className="btn-minimal w-full text-sm uppercase tracking-widest">
-                  Ver café
+                <p className="text-coffee-brown/60 text-lg italic mb-4 font-medium">{product.notes}</p>
+                <p className="text-coffee-dark font-serif text-2xl font-bold mb-8">R$ {product.price}</p>
+                <button
+                  type="button"
+                  onClick={() =>
+                    onAddToCart({
+                      kind: 'product',
+                      id: product.id,
+                      name: product.name,
+                      price: product.price,
+                      notes: product.notes,
+                    })
+                  }
+                  className="btn-premium w-full text-sm uppercase tracking-widest py-4"
+                >
+                  Adicionar ao carrinho
                 </button>
               </div>
             </motion.div>
@@ -457,10 +523,11 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
               </div>
 
               <button 
-                onClick={() => onAddToCart(plan)}
+                type="button"
+                onClick={() => onAddToCart({ ...plan, kind: 'plan' })}
                 className={`w-full py-3 md:py-3.5 rounded-xl text-[10px] md:text-[11px] font-black uppercase tracking-[0.25em] transition-all ${plan.popular ? 'bg-coffee-beige text-coffee-dark hover:bg-white' : 'bg-coffee-dark text-coffee-beige hover:bg-coffee-brown'}`}
               >
-                Assinar agora
+                Adicionar ao carrinho
               </button>
             </motion.div>
           ))}
@@ -733,9 +800,8 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState<any[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isContactOpen, setIsContactOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isCommitmentOpen, setIsCommitmentOpen] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<any>(null);
   const [authMode, setAuthMode] = useState<'signup' | 'signin'>('signin');
   const [authCity, setAuthCity] = useState('');
   const [authAddress, setAuthAddress] = useState('');
@@ -803,12 +869,6 @@ export default function App() {
     setIsLoginOpen(false);
     setAuthLoading(false);
     resetAuthFields();
-  };
-
-  const handleOpenAuthForSubscription = () => {
-    setAuthMode('signin');
-    resetAuthFields();
-    setIsLoginOpen(true);
   };
 
   const openLoginModal = () => {
@@ -926,48 +986,7 @@ export default function App() {
   };
 
   const addToCart = (item: any) => {
-    if (!user) {
-      handleOpenAuthForSubscription();
-      return;
-    }
-    setSelectedPlan(item);
-    setIsCommitmentOpen(true);
-  };
-
-  const confirmSubscription = async () => {
-    if (!selectedPlan) return;
-    if (!user?.email) {
-      handleOpenAuthForSubscription();
-      return;
-    }
-
-    try {
-      const amount = Number(String(selectedPlan.price).replace(',', '.'));
-      const response = await fetch('/api/payments/create-subscription', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: user.uid,
-          payerEmail: user.email,
-          planId: selectedPlan.id,
-          planName: selectedPlan.name,
-          amount,
-        }),
-      });
-
-      const result = await response.json();
-      if (!response.ok || !result.checkoutUrl) {
-        throw new Error(result.error || 'Falha ao iniciar assinatura no Mercado Pago.');
-      }
-
-      setIsCommitmentOpen(false);
-      window.open(result.checkoutUrl, '_blank');
-    } catch (error) {
-      console.error('Erro ao assinar:', error);
-      alert('Ocorreu um erro ao iniciar a assinatura no Mercado Pago.');
-    }
+    setCart((prev) => [...prev, item]);
   };
 
   const removeFromCart = (index: number) => {
@@ -980,8 +999,11 @@ export default function App() {
     if (!identity) return;
 
     try {
-      const items = cart.map(item => ({
-        title: `Plano Monte Club - ${item.name}`,
+      const items = cart.map((item) => ({
+        title:
+          item.kind === 'product'
+            ? `${item.name} — Café especial`
+            : `Monte Club — ${item.name}`,
         quantity: 1,
         unit_price: Number(String(item.price).replace(',', '.')),
         currency_id: 'BRL',
@@ -1038,6 +1060,7 @@ export default function App() {
           cartCount={cart.length} 
           onOpenCart={() => setIsCartOpen(true)} 
           onOpenLogin={openLoginModal}
+          onOpenContact={() => setIsContactOpen(true)}
         />
         
         {/* Login Modal */}
@@ -1312,43 +1335,73 @@ export default function App() {
           )}
         </AnimatePresence>
 
-        {/* Commitment Confirmation Modal */}
+        {/* Contact Modal */}
         <AnimatePresence>
-          {isCommitmentOpen && (
+          {isContactOpen && (
             <>
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                onClick={() => setIsCommitmentOpen(false)}
-                className="fixed inset-0 bg-coffee-dark/80 backdrop-blur-md z-[100]"
+                onClick={() => setIsContactOpen(false)}
+                className="fixed inset-0 bg-coffee-dark/75 backdrop-blur-md z-[85]"
               />
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.94, y: 16 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="fixed inset-0 m-auto w-full max-w-lg h-fit bg-coffee-beige z-[110] rounded-[3rem] p-12 text-center coffee-shadow"
+                exit={{ opacity: 0, scale: 0.94, y: 16 }}
+                className="fixed inset-x-4 top-1/2 -translate-y-1/2 mx-auto w-full max-w-md max-h-[90dvh] overflow-y-auto bg-coffee-beige z-[90] rounded-3xl p-8 md:p-10 coffee-shadow text-left"
               >
-                <Shield className="w-16 h-16 text-coffee-accent mx-auto mb-8" />
-                <h2 className="text-3xl font-serif text-coffee-dark mb-6">Compromisso Monte Club</h2>
-                <div className="bg-white/50 p-8 rounded-2xl border border-coffee-brown/5 text-left mb-12">
-                  <p className="text-coffee-dark font-bold mb-4 flex items-center gap-3">
-                    <Check className="text-green-600" /> Permanência mínima de 3 meses
-                  </p>
-                  <p className="text-coffee-brown/60 text-sm leading-relaxed">
-                    Para garantir a melhor experiência e torras exclusivas, nossas assinaturas possuem um ciclo mínimo de 3 meses. Após esse período, você pode cancelar a qualquer momento.
-                  </p>
-                </div>
-                <div className="flex flex-col gap-4">
-                  <button 
-                    onClick={confirmSubscription}
-                    className="btn-premium w-full py-6 text-lg"
+                <div className="flex justify-between items-start gap-4 mb-6">
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.35em] text-coffee-accent mb-2">Contato</p>
+                    <h2 className="text-2xl md:text-3xl font-serif text-coffee-dark leading-tight">Fale com a Jccoffee</h2>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsContactOpen(false)}
+                    className="p-2 text-coffee-dark hover:opacity-60 shrink-0"
+                    aria-label="Fechar"
                   >
-                    Confirmar e Pagar (Mercado Pago)
+                    <X size={22} />
                   </button>
-                  <button onClick={() => setIsCommitmentOpen(false)} className="text-[10px] uppercase font-black tracking-widest text-coffee-brown/40 hover:text-coffee-dark transition-colors py-4">
-                    Cancelar
-                  </button>
+                </div>
+                <p className="text-sm text-coffee-brown/65 mb-8 leading-relaxed">
+                  Tire dúvidas sobre pedidos, cafés ou parcerias. Preferir WhatsApp? É só clicar abaixo.
+                </p>
+                <div className="space-y-4">
+                  <a
+                    href={`mailto:${CONTACT_EMAIL}`}
+                    className="flex items-center gap-4 p-4 rounded-2xl bg-white/70 border border-coffee-brown/10 hover:border-coffee-dark/20 transition-colors"
+                  >
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-coffee-dark/10 text-coffee-dark">
+                      <Mail size={20} />
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-coffee-brown/45 mb-0.5">E-mail</p>
+                      <p className="text-coffee-dark font-medium break-all">{CONTACT_EMAIL}</p>
+                    </div>
+                  </a>
+                  <a
+                    href={`tel:${CONTACT_PHONE_E164.replace(/\s/g, '')}`}
+                    className="flex items-center gap-4 p-4 rounded-2xl bg-white/70 border border-coffee-brown/10 hover:border-coffee-dark/20 transition-colors"
+                  >
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-coffee-dark/10 text-coffee-dark">
+                      <Phone size={20} />
+                    </span>
+                    <div>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-coffee-brown/45 mb-0.5">Telefone</p>
+                      <p className="text-coffee-dark font-medium">{CONTACT_PHONE_LABEL}</p>
+                    </div>
+                  </a>
+                  <a
+                    href={`https://wa.me/${CONTACT_WHATSAPP_DIGITS}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl bg-[#25D366]/15 text-coffee-dark font-bold text-sm hover:bg-[#25D366]/25 transition-colors border border-[#25D366]/30"
+                  >
+                    WhatsApp
+                  </a>
                 </div>
               </motion.div>
             </>
@@ -1388,10 +1441,12 @@ export default function App() {
                     </div>
                   ) : (
                     cart.map((item, idx) => (
-                      <div key={idx} className="bg-white/50 p-6 rounded-2xl border border-coffee-brown/5 flex justify-between items-center">
-                        <div>
+                      <div key={idx} className="bg-white/50 p-6 rounded-2xl border border-coffee-brown/5 flex justify-between items-center gap-4">
+                        <div className="min-w-0">
                           <h4 className="font-serif text-xl text-coffee-dark">{item.name}</h4>
-                          <p className="text-sm text-coffee-brown/60">Plano Monte Club</p>
+                          <p className="text-sm text-coffee-brown/60">
+                            {item.kind === 'product' ? 'Café especial' : 'Monte Club · assinatura mensal'}
+                          </p>
                           <p className="text-coffee-accent font-bold mt-2">R$ {item.price}</p>
                         </div>
                         <button 
@@ -1414,10 +1469,11 @@ export default function App() {
                       </span>
                     </div>
                     <button 
+                      type="button"
                       onClick={handleCheckout}
                       className="btn-premium w-full py-6 text-lg uppercase tracking-[0.3em]"
                     >
-                      Finalizar no WhatsApp
+                      Finalizar compra
                     </button>
                   </div>
                 )}
@@ -1428,7 +1484,7 @@ export default function App() {
 
         <Hero />
         <Origin />
-        <Products />
+        <Products onAddToCart={addToCart} />
         <MonteClub onAddToCart={addToCart} />
         {profile?.role === 'admin' && <AdminDashboard />}
         <Story />
