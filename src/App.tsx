@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import { Coffee, MapPin, ArrowRight, Instagram, Menu, X, Check, Star, Shield, Zap, Heart, ShoppingBag, User, LogOut, LayoutDashboard, Package, Users, Calendar, ExternalLink } from 'lucide-react';
 import { auth, db, signInWithGoogle, logout, ensureUserProfile } from './firebase';
 import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
-import { doc, getDoc, collection, onSnapshot, query, where, addDoc, serverTimestamp, updateDoc, getDocs } from 'firebase/firestore';
+import { doc, getDoc, collection, onSnapshot, query, where, serverTimestamp, updateDoc, getDocs } from 'firebase/firestore';
 
 // --- Context ---
 const AuthContext = createContext<{
@@ -689,30 +689,37 @@ export default function App() {
 
   const confirmSubscription = async () => {
     if (!selectedPlan || !user) return;
-    
-    // Mercado Pago Simulation
-    // In a real app, you would call a backend function here to create a preference
-    // and redirect the user to Mercado Pago checkout.
-    
+    if (!user.email) {
+      alert('Seu usuário não possui e-mail. Faça login novamente para continuar.');
+      return;
+    }
+
     try {
-      await addDoc(collection(db, 'subscriptions'), {
-        userId: user.uid,
-        planId: selectedPlan.id,
-        status: 'active',
-        startDate: serverTimestamp(),
-        cyclesCompleted: 0,
-        paymentMethod: 'credit_card',
-        lastDeliveryStatus: 'pending',
-        commitmentMonths: 3
+      const amount = Number(String(selectedPlan.price).replace(',', '.'));
+      const response = await fetch('/api/payments/create-subscription', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.uid,
+          payerEmail: user.email,
+          planId: selectedPlan.id,
+          planName: selectedPlan.name,
+          amount,
+        }),
       });
-      
+
+      const result = await response.json();
+      if (!response.ok || !result.checkoutUrl) {
+        throw new Error(result.error || 'Falha ao iniciar assinatura no Mercado Pago.');
+      }
+
       setIsCommitmentOpen(false);
-      setCart(prev => [...prev, selectedPlan]);
-      setIsCartOpen(true);
-      alert('Assinatura realizada com sucesso! Bem-vindo ao Monte Club.');
+      window.open(result.checkoutUrl, '_blank');
     } catch (error) {
       console.error('Erro ao assinar:', error);
-      alert('Ocorreu um erro ao processar sua assinatura.');
+      alert('Ocorreu um erro ao iniciar a assinatura no Mercado Pago.');
     }
   };
 
@@ -720,15 +727,43 @@ export default function App() {
     setCart(prev => prev.filter((_, i) => i !== index));
   };
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (cart.length === 0) return;
-    const message = encodeURIComponent(
-      `Olá JCCoffee! Gostaria de finalizar o meu pedido:\n\n` +
-      cart.map(item => `- Plano Monte Club: ${item.name} (R$ ${item.price}/mês)`).join('\n') +
-      `\n\nAguardo o retorno para os próximos passos!`
-    );
-    const whatsappNumber = "5500000000000"; 
-    window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
+    if (!user?.email) {
+      setIsLoginOpen(true);
+      return;
+    }
+
+    try {
+      const items = cart.map(item => ({
+        title: `Plano Monte Club - ${item.name}`,
+        quantity: 1,
+        unit_price: Number(String(item.price).replace(',', '.')),
+        currency_id: 'BRL',
+      }));
+
+      const response = await fetch('/api/payments/create-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.uid,
+          payerEmail: user.email,
+          items,
+        }),
+      });
+
+      const result = await response.json();
+      if (!response.ok || !result.checkoutUrl) {
+        throw new Error(result.error || 'Falha ao iniciar checkout no Mercado Pago.');
+      }
+
+      window.open(result.checkoutUrl, '_blank');
+    } catch (error) {
+      console.error('Erro no checkout:', error);
+      alert('Não foi possível iniciar o checkout do Mercado Pago.');
+    }
   };
 
   if (loading) {
