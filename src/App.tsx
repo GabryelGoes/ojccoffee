@@ -268,63 +268,75 @@ const Navbar = ({
 
 const Hero = () => {
   return (
-    <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden bg-coffee-brown">
-      {/* Rich Coffee Environment Background */}
+    <section
+      id="home"
+      className="snap-section relative min-h-[100dvh] h-[100dvh] max-h-[100dvh] flex flex-col items-center justify-center overflow-hidden bg-coffee-brown px-5 py-16 md:py-12"
+    >
       <div className="absolute inset-0 z-0">
-        <img 
-          src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=2070" 
-          alt="Coffee Table Environment" 
-          className="w-full h-full object-cover opacity-60 scale-105"
+        <img
+          src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=2070"
+          alt="Coffee Table Environment"
+          className="h-full w-full object-cover object-center opacity-60"
           referrerPolicy="no-referrer"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-coffee-dark/40 via-transparent to-coffee-dark/80" />
       </div>
 
-      <div className="relative z-10 text-center px-6 max-w-5xl">
+      <div className="relative z-10 mx-auto max-w-5xl text-center min-h-0 flex flex-col justify-center">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
+          transition={{ duration: 1.2, ease: 'easeOut' }}
+          className="flex flex-col items-center max-h-[85vh]"
         >
-          <Logo className="h-48 mb-12 mx-auto" light />
-          <h1 className="text-coffee-beige mb-10 tracking-tight">
+          <Logo className="h-[clamp(6rem,22vmin,11rem)] mb-6 md:mb-8 mx-auto shrink-0 max-h-[28vh]" light />
+          <h1 className="text-coffee-beige mb-4 md:mb-6 tracking-tight text-[clamp(1.75rem,6vmin,5rem)] leading-[1.05]">
             O café que carrega <br />
             <span className="italic font-light">propósito.</span>
           </h1>
-          <p className="text-coffee-beige/80 text-2xl md:text-3xl max-w-3xl mx-auto mb-16 font-medium leading-relaxed">
+          <p className="text-coffee-beige/85 max-w-3xl mx-auto mb-8 md:mb-10 font-medium leading-snug text-[clamp(1rem,2.8vmin,1.75rem)]">
             Direto da origem. Feito para momentos que importam.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-10">
-            <a href="#products" className="btn-premium px-16 py-6 text-xl bg-coffee-beige text-coffee-dark hover:bg-white">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 shrink-0">
+            <a
+              href="#products"
+              className="btn-premium px-10 md:px-14 py-4 md:py-5 text-base md:text-lg bg-coffee-beige text-coffee-dark hover:bg-white whitespace-nowrap"
+            >
               Conhecer cafés
             </a>
-            <a href="#story" className="text-coffee-beige text-xl flex items-center gap-4 group font-bold tracking-tight">
-              Nossa História <ArrowRight className="w-8 h-8 group-hover:translate-x-2 transition-transform" />
+            <a
+              href="#story"
+              className="text-coffee-beige text-base md:text-xl flex items-center gap-3 group font-bold tracking-tight whitespace-nowrap"
+            >
+              Nossa História <ArrowRight className="w-6 h-6 md:w-8 md:h-8 group-hover:translate-x-2 transition-transform shrink-0" />
             </a>
           </div>
         </motion.div>
       </div>
 
-      {/* Subtle Grain Overlay */}
       <div className="absolute inset-0 pointer-events-none grain-texture opacity-20" />
     </section>
   );
 };
 
 const Origin = () => (
-  <section id="origin" className="py-48 px-8 bg-coffee-beige kraft-texture relative overflow-hidden">
-    <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24 items-center relative z-10">
+  <section
+    id="origin"
+    className="snap-section relative min-h-[100dvh] max-h-[100dvh] flex flex-col justify-center overflow-hidden bg-coffee-beige kraft-texture px-5 py-10 md:py-12 lg:px-10"
+  >
+    <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 xl:gap-16 items-center relative z-10 min-h-0 flex-1">
       <motion.div
         initial={{ opacity: 0, x: -60 }}
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 1 }}
+        className="min-h-0 flex flex-col justify-center"
       >
-        <h2 className="text-coffee-dark mb-12">
+        <h2 className="text-coffee-dark mb-5 md:mb-7 text-[clamp(1.5rem,4.5vmin,3.75rem)] leading-[1.12] font-serif font-medium tracking-tight">
           Da altitude nasce o sabor. <br />
           <span className="italic font-light text-coffee-accent">Da origem vem o propósito.</span>
         </h2>
-        <div className="space-y-10 text-coffee-brown/80 text-xl md:text-2xl leading-relaxed font-medium">
+        <div className="space-y-4 md:space-y-5 text-coffee-brown/80 text-[clamp(0.9rem,1.8vmin,1.25rem)] leading-relaxed font-medium">
           <p>
             Nossos grãos são cultivados em altitudes elevadas, onde o clima e o solo criam o ambiente perfeito para cafés de pontuação superior.
           </p>
@@ -333,24 +345,30 @@ const Origin = () => (
           </p>
         </div>
       </motion.div>
-      
-      <div className="relative">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
+
+      <div className="relative min-h-0 flex items-center justify-center lg:justify-end">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 1.5 }}
-          className="rounded-[3rem] overflow-hidden coffee-shadow aspect-[4/5]"
+          transition={{ duration: 1.2 }}
+          className="relative w-full max-w-md lg:max-w-none mx-auto lg:mx-0 rounded-[2rem] lg:rounded-[2.5rem] overflow-hidden coffee-shadow aspect-[4/5] max-h-[38vh] sm:max-h-[42vh] md:max-h-[48vh] lg:max-h-[min(58vh,520px)]"
         >
-          <img 
-            src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&q=80&w=2070" 
-            alt="Coffee Plantation Mountain" 
-            className="w-full h-full object-cover"
+          <img
+            src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&q=80&w=2070"
+            alt="Coffee Plantation Mountain"
+            className="absolute inset-0 h-full w-full object-cover object-center"
             referrerPolicy="no-referrer"
           />
         </motion.div>
-        {/* Mountain Line Overlay */}
-        <svg viewBox="0 0 400 200" className="absolute -bottom-10 -left-10 w-64 h-auto text-coffee-accent opacity-40" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          viewBox="0 0 400 200"
+          className="pointer-events-none absolute -bottom-6 -left-4 lg:-left-8 w-40 lg:w-52 h-auto text-coffee-accent opacity-35"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          aria-hidden
+        >
           <path d="M0,150 L100,50 L200,120 L300,30 L400,100" />
         </svg>
       </div>
@@ -387,38 +405,45 @@ const Products = ({ onAddToCart }: { onAddToCart: (item: Record<string, unknown>
   ];
 
   return (
-    <section id="products" className="py-48 px-8 bg-white wood-texture">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-32">
-          <h2 className="text-coffee-dark mb-8">Nossas Seleções</h2>
-          <p className="text-coffee-brown/60 text-2xl font-medium">Grãos especiais em embalagens Kraft que preservam a alma do café.</p>
+    <section
+      id="products"
+      className="snap-section relative min-h-[100dvh] max-h-[100dvh] flex flex-col justify-center overflow-hidden bg-white wood-texture px-4 md:px-8 py-8 md:py-10"
+    >
+      <div className="max-w-7xl mx-auto w-full min-h-0 flex flex-col flex-1 justify-center">
+        <div className="text-center mb-5 md:mb-8 shrink-0">
+          <h2 className="text-coffee-dark mb-3 md:mb-4 text-[clamp(1.65rem,4vmin,3.25rem)] leading-tight font-serif font-medium tracking-tight">
+            Nossas Seleções
+          </h2>
+          <p className="text-coffee-brown/65 font-medium leading-snug text-[clamp(0.85rem,2vmin,1.35rem)] max-w-2xl mx-auto px-2">
+            Grãos especiais em embalagens Kraft que preservam a alma do café.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-20">
+        <div className="flex md:grid md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-2 md:pb-0 -mx-2 px-2 md:mx-0 md:px-0 min-h-0 flex-1 items-stretch [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-coffee-brown/20">
           {products.map((product, idx) => (
-            <motion.div 
+            <motion.div
               key={product.id}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: idx * 0.2, duration: 1 }}
-              className="group"
+              transition={{ delay: idx * 0.15, duration: 0.8 }}
+              className="group shrink-0 w-[min(88vw,340px)] md:w-auto snap-center flex flex-col min-h-0"
             >
-              <div className="aspect-[3/4] overflow-hidden relative mb-12 rounded-[2rem] coffee-shadow bg-coffee-beige kraft-texture">
-                <img 
-                  src={product.image} 
-                  alt={product.name} 
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 opacity-90"
+              <div className="relative mb-4 md:mb-5 rounded-2xl md:rounded-[1.75rem] overflow-hidden coffee-shadow bg-coffee-beige kraft-texture aspect-[3/4] max-h-[min(32vh,280px)] md:max-h-[min(38vh,340px)] lg:max-h-none">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="absolute inset-0 h-full w-full object-cover object-center opacity-95 transition-transform duration-700 md:group-hover:scale-[1.03]"
                   referrerPolicy="no-referrer"
                 />
-                <div className="absolute top-10 left-10 bg-coffee-dark text-coffee-beige text-[10px] font-black uppercase tracking-[0.3em] px-6 py-3 rounded-full">
+                <div className="absolute top-3 left-3 md:top-4 md:left-4 bg-coffee-dark text-coffee-beige text-[9px] md:text-[10px] font-black uppercase tracking-[0.25em] px-4 py-2 rounded-full">
                   {product.tag}
                 </div>
               </div>
-              <div className="text-center">
-                <h3 className="text-4xl font-serif text-coffee-dark mb-4">{product.name}</h3>
-                <p className="text-coffee-brown/60 text-lg italic mb-4 font-medium">{product.notes}</p>
-                <p className="text-coffee-dark font-serif text-2xl font-bold mb-8">R$ {product.price}</p>
+              <div className="text-center flex flex-col flex-1 min-h-0">
+                <h3 className="font-serif text-coffee-dark mb-2 text-xl md:text-2xl lg:text-3xl leading-tight">{product.name}</h3>
+                <p className="text-coffee-brown/65 text-xs md:text-sm italic mb-3 leading-snug line-clamp-2">{product.notes}</p>
+                <p className="text-coffee-dark font-serif text-lg md:text-xl font-bold mb-4">R$ {product.price}</p>
                 <button
                   type="button"
                   onClick={() =>
@@ -430,7 +455,7 @@ const Products = ({ onAddToCart }: { onAddToCart: (item: Record<string, unknown>
                       notes: product.notes,
                     })
                   }
-                  className="btn-premium w-full text-sm uppercase tracking-widest py-4"
+                  className="btn-premium w-full text-[10px] md:text-xs uppercase tracking-widest py-3 md:py-3.5 mt-auto"
                 >
                   Adicionar ao carrinho
                 </button>
@@ -438,6 +463,9 @@ const Products = ({ onAddToCart }: { onAddToCart: (item: Record<string, unknown>
             </motion.div>
           ))}
         </div>
+        <p className="text-center text-[10px] text-coffee-brown/45 mt-3 md:hidden shrink-0">
+          Deslize para ver os cafés
+        </p>
       </div>
     </section>
   );
@@ -473,59 +501,85 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
   ];
 
   return (
-    <section id="monte-club" className="py-12 md:py-14 lg:py-16 px-6 md:px-8 bg-coffee-beige kraft-texture relative overflow-hidden">
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div className="text-center mb-6 md:mb-8 lg:mb-10">
-          <span className="text-coffee-accent uppercase tracking-[0.5em] text-[11px] md:text-[12px] font-black mb-2 md:mb-3 block">Assinatura</span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl text-coffee-dark mb-2 md:mb-3">Monte Club</h2>
-          <p className="text-coffee-brown/60 text-base md:text-lg font-medium max-w-2xl mx-auto italic leading-snug">
-            "Sua jornada de elevação através do café, entregue mensalmente na sua porta."
+    <section
+      id="monte-club"
+      className="snap-section relative min-h-[100dvh] max-h-[100dvh] flex flex-col justify-center overflow-hidden bg-coffee-beige kraft-texture px-4 md:px-8 py-8 md:py-10"
+    >
+      <div className="absolute bottom-0 left-0 right-0 h-32 opacity-[0.06] pointer-events-none">
+        <svg viewBox="0 0 1440 120" className="w-full h-full" preserveAspectRatio="none">
+          <path
+            fill="#3D2B1F"
+            d="M0,80L48,88C96,96,192,112,288,106.7C384,101,480,75,576,69.3C672,64,768,80,864,85.3C960,91,1056,85,1152,80C1248,75,1344,69,1392,66.7L1440,64L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z"
+          />
+        </svg>
+      </div>
+
+      <div className="max-w-7xl mx-auto relative z-10 w-full min-h-0 flex flex-col flex-1 justify-center">
+        <div className="text-center mb-4 md:mb-6 shrink-0">
+          <span className="text-coffee-accent uppercase tracking-[0.45em] text-[10px] md:text-[11px] font-black mb-1.5 md:mb-2 block">
+            Assinatura
+          </span>
+          <h2 className="text-coffee-dark mb-2 text-[clamp(1.5rem,4vmin,3rem)] font-serif font-medium leading-tight tracking-tight">
+            Monte Club
+          </h2>
+          <p className="text-coffee-brown/60 text-[clamp(0.8rem,1.8vmin,1.05rem)] font-medium max-w-xl mx-auto italic leading-snug px-2">
+            Sua jornada de elevação através do café, entregue mensalmente na sua porta.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 lg:gap-6 md:items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 lg:gap-5 md:items-stretch min-h-0 flex-1">
           {plans.map((plan, idx) => (
             <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 30 }}
+              key={plan.id}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: idx * 0.2, duration: 1 }}
-              className={`relative p-5 md:p-6 lg:p-7 rounded-2xl md:rounded-[1.75rem] border ${plan.popular ? 'bg-coffee-dark text-coffee-beige border-transparent coffee-shadow' : 'bg-white/50 border-coffee-brown/10'} flex flex-col`}
+              transition={{ delay: idx * 0.12, duration: 0.75 }}
+              className={`relative flex flex-col min-h-0 rounded-2xl md:rounded-[1.5rem] border p-4 md:p-5 ${
+                plan.popular
+                  ? 'bg-coffee-dark text-coffee-beige border-transparent coffee-shadow'
+                  : 'bg-white/60 border-coffee-brown/10 backdrop-blur-sm'
+              }`}
             >
               {plan.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-coffee-accent text-white text-[8px] md:text-[9px] font-black uppercase tracking-[0.25em] px-4 md:px-5 py-1.5 md:py-2 rounded-full whitespace-nowrap">
+                <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-coffee-accent text-white text-[7px] md:text-[8px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full whitespace-nowrap">
                   Mais Escolhido
                 </div>
               )}
-              
-              <h3 className={`text-xl md:text-2xl font-serif mb-2 md:mb-3 leading-tight ${plan.popular ? 'text-coffee-beige' : 'text-coffee-dark'}`}>{plan.name}</h3>
-              <p className={`text-sm md:text-base mb-4 md:mb-5 font-medium italic leading-snug ${plan.popular ? 'text-coffee-beige/60' : 'text-coffee-brown/60'}`}>
+
+              <h3 className={`text-lg md:text-xl font-serif mb-1.5 leading-tight ${plan.popular ? 'text-coffee-beige' : 'text-coffee-dark'}`}>
+                {plan.name}
+              </h3>
+              <p className={`text-xs md:text-sm mb-3 font-medium italic leading-snug line-clamp-2 ${plan.popular ? 'text-coffee-beige/65' : 'text-coffee-brown/60'}`}>
                 {plan.description}
               </p>
-              
-              <div className="mb-4 md:mb-5">
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-sm md:text-base font-bold">R$</span>
-                  <span className="text-3xl md:text-4xl lg:text-[2.6rem] font-serif font-bold tracking-tighter leading-none">{plan.price}</span>
-                  <span className="text-[10px] md:text-xs font-medium uppercase tracking-widest opacity-60">/mês</span>
+
+              <div className="mb-3">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-xs font-bold">R$</span>
+                  <span className="text-2xl md:text-3xl font-serif font-bold tracking-tighter leading-none">{plan.price}</span>
+                  <span className="text-[9px] md:text-[10px] font-medium uppercase tracking-widest opacity-60">/mês</span>
                 </div>
-                <p className="text-[10px] md:text-xs font-black uppercase tracking-widest mt-1.5 text-coffee-accent">{plan.shipping}</p>
+                <p className="text-[9px] md:text-[10px] font-black uppercase tracking-widest mt-1 text-coffee-accent">{plan.shipping}</p>
               </div>
 
-              <div className="space-y-1.5 md:space-y-2 mb-5 md:mb-6 flex-grow">
+              <div className="space-y-1 mb-3 flex-1 min-h-0 overflow-hidden">
                 {plan.features.map((feature, fIdx) => (
-                  <div key={fIdx} className="flex items-start gap-2 md:gap-2.5">
-                    <Check className={`w-3.5 h-3.5 md:w-4 md:h-4 shrink-0 mt-0.5 ${plan.popular ? 'text-coffee-accent' : 'text-coffee-dark'}`} />
-                    <span className="text-[11px] md:text-xs font-medium tracking-tight leading-tight">{feature}</span>
+                  <div key={fIdx} className="flex items-start gap-1.5">
+                    <Check className={`w-3 h-3 shrink-0 mt-0.5 ${plan.popular ? 'text-coffee-accent' : 'text-coffee-dark'}`} />
+                    <span className="text-[10px] md:text-[11px] font-medium tracking-tight leading-snug">{feature}</span>
                   </div>
                 ))}
               </div>
 
-              <button 
+              <button
                 type="button"
                 onClick={() => onAddToCart({ ...plan, kind: 'plan' })}
-                className={`w-full py-3 md:py-3.5 rounded-xl text-[10px] md:text-[11px] font-black uppercase tracking-[0.25em] transition-all ${plan.popular ? 'bg-coffee-beige text-coffee-dark hover:bg-white' : 'bg-coffee-dark text-coffee-beige hover:bg-coffee-brown'}`}
+                className={`w-full py-2.5 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-[0.22em] transition-all mt-auto ${
+                  plan.popular
+                    ? 'bg-coffee-beige text-coffee-dark hover:bg-white'
+                    : 'bg-coffee-dark text-coffee-beige hover:bg-coffee-brown'
+                }`}
               >
                 Adicionar ao carrinho
               </button>
@@ -533,18 +587,9 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
           ))}
         </div>
 
-        <div className="mt-8 md:mt-10 text-center">
-          <p className="text-coffee-brown/40 text-xs md:text-sm font-black uppercase tracking-[0.35em] md:tracking-[0.5em]">
-            Torra fresca garantida • Máximo 1 mês de torra
-          </p>
-        </div>
-      </div>
-      
-      {/* Decorative Mountain Line */}
-      <div className="absolute bottom-0 left-0 w-full h-64 opacity-5 pointer-events-none">
-        <svg viewBox="0 0 1440 320" className="w-full h-full preserve-3d">
-          <path fill="#3D2B1F" d="M0,160L48,176C96,192,192,224,288,224C384,224,480,192,576,165.3C672,139,768,117,864,128C960,139,1056,181,1152,186.7C1248,192,1344,160,1392,144L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-        </svg>
+        <p className="mt-4 text-center text-coffee-brown/45 text-[9px] md:text-[10px] font-black uppercase tracking-[0.28em] shrink-0">
+          Torra fresca garantida · Máximo 1 mês de torra
+        </p>
       </div>
     </section>
   );
@@ -553,90 +598,95 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
 const Story = () => (
   <section
     id="story"
-    className="relative h-dvh min-h-dvh max-h-dvh flex flex-col items-center justify-center overflow-y-auto overflow-x-hidden px-6 md:px-10 py-8 md:py-12 bg-coffee-dark text-coffee-beige"
+    className="snap-section relative min-h-[100dvh] max-h-[100dvh] flex flex-col items-center justify-center overflow-hidden px-5 md:px-10 py-10 md:py-12 bg-coffee-dark text-coffee-beige"
   >
-    <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
-      <img 
-        src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&q=80&w=2070" 
-        alt="Grãos de café — fundo da seção Nossa Herança" 
-        className="w-full h-full object-cover"
+    <div className="absolute inset-0 z-0 opacity-[0.22] pointer-events-none">
+      <img
+        src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&q=80&w=2070"
+        alt="Grãos de café — fundo da seção Nossa Herança"
+        className="h-full w-full object-cover object-center"
         referrerPolicy="no-referrer"
       />
     </div>
-    
-    <div className="max-w-4xl mx-auto w-full text-center relative z-10 my-auto">
+    <div className="absolute inset-0 z-[1] bg-gradient-to-b from-coffee-dark/85 via-coffee-dark/75 to-coffee-dark/90" />
+
+    <div className="max-w-4xl mx-auto w-full text-center relative z-10 min-h-0 flex flex-col justify-center max-h-[88vh]">
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 1.2 }}
+        transition={{ duration: 1 }}
+        className="flex flex-col justify-center min-h-0"
       >
-        <span className="text-coffee-accent uppercase tracking-[0.5em] text-[12px] font-black mb-6 md:mb-8 block">Nossa Herança</span>
-        <h2 className="text-coffee-beige mb-8 md:mb-10 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif leading-[1.08] tracking-tight">
+        <span className="text-coffee-accent uppercase tracking-[0.45em] text-[10px] md:text-[11px] font-black mb-4 md:mb-5 block shrink-0">
+          Nossa Herança
+        </span>
+        <h2 className="text-coffee-beige mb-5 md:mb-6 text-[clamp(1.35rem,4.5vmin,3.25rem)] font-serif leading-[1.12] tracking-tight font-medium shrink-0">
           Uma história real de fé e resiliência.
         </h2>
-        <div className="space-y-6 md:space-y-8 lg:space-y-10 text-coffee-beige/85 text-lg sm:text-xl md:text-2xl lg:text-3xl leading-relaxed font-medium italic text-pretty">
+        <div className="space-y-4 md:space-y-5 text-coffee-beige/88 text-[clamp(0.85rem,2.2vmin,1.35rem)] leading-relaxed font-medium italic text-pretty text-balance min-h-0">
           <p>
-            Na JC COFFEE, acreditamos que cada xícara carrega tempo, origem e significado. Não se trata apenas do sabor — mas da atmosfera que ele cria, dos encontros que inspira e das histórias que desperta.
+            Na JC COFFEE, cada xícara carrega tempo, origem e significado — não só sabor, mas encontros e histórias.
           </p>
           <p>
-            Nossa essência nasce de uma herança real. Gerações que viveram do café, que encontraram nele sustento e propósito. Mesmo quando o tempo mudou os caminhos, a conexão permaneceu — silenciosa, mas presente.
+            Nossa essência vem de uma herança real: gerações que viveram do café e encontraram propósito nele.
           </p>
-          <p>
+          <p className="text-coffee-beige font-serif not-italic text-[clamp(1rem,2.5vmin,1.5rem)] pt-1">
             Foi dessa memória que surgiu a JC COFFEE.
           </p>
         </div>
-        <div className="mt-10 md:mt-14 w-24 md:w-28 h-[2px] bg-coffee-accent mx-auto" />
+        <div className="mt-6 md:mt-8 w-20 md:w-24 h-0.5 bg-coffee-accent mx-auto shrink-0" />
       </motion.div>
     </div>
   </section>
 );
 
 const Experience = () => (
-  <section className="py-48 px-8 bg-coffee-beige grain-texture">
-    <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-32 items-center">
+  <section className="snap-section relative min-h-[100dvh] max-h-[100dvh] flex flex-col justify-center overflow-hidden px-5 md:px-8 py-10 md:py-12 bg-coffee-beige grain-texture">
+    <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-center min-h-0 flex-1">
       <motion.div
-        initial={{ opacity: 0, x: -40 }}
+        initial={{ opacity: 0, x: -32 }}
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 1.2 }}
+        transition={{ duration: 1 }}
+        className="min-h-0"
       >
-        <h2 className="text-coffee-dark mb-12">
+        <h2 className="text-coffee-dark mb-5 md:mb-6 text-[clamp(1.45rem,4vmin,3rem)] leading-[1.12] font-serif font-medium tracking-tight">
           Café é encontro. <br />
           É pausa. <br />
           <span className="italic font-light text-coffee-accent">É presença.</span>
         </h2>
-        <p className="text-coffee-brown/70 text-2xl md:text-3xl font-medium leading-relaxed italic">
-          "O café nunca foi só sobre o que está na xícara. É sobre quem está ao seu lado e as histórias que surgem a cada gole."
+        <p className="text-coffee-brown/75 text-[clamp(0.9rem,2.1vmin,1.35rem)] font-medium leading-relaxed italic max-w-xl">
+          O café nunca foi só o que está na xícara — é quem está ao seu lado e as histórias a cada gole.
         </p>
       </motion.div>
-      
-      <div className="grid grid-cols-2 gap-10">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
+
+      <div className="grid grid-cols-2 gap-4 md:gap-6 min-h-0 max-h-[min(52vh,420px)] lg:max-h-none">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="rounded-[2.5rem] overflow-hidden coffee-shadow aspect-square"
+          className="rounded-2xl md:rounded-[2rem] overflow-hidden coffee-shadow aspect-square min-h-0"
         >
-          <img 
-            src="https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&q=80&w=1000" 
-            alt="Brewing Coffee" 
-            className="w-full h-full object-cover" 
-            referrerPolicy="no-referrer" 
+          <img
+            src="https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&q=80&w=1000"
+            alt="Preparando café"
+            className="h-full w-full object-cover object-center"
+            referrerPolicy="no-referrer"
           />
         </motion.div>
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="rounded-[2.5rem] overflow-hidden coffee-shadow aspect-square mt-20"
+          transition={{ delay: 0.15 }}
+          className="rounded-2xl md:rounded-[2rem] overflow-hidden coffee-shadow aspect-square min-h-0 translate-y-4 md:translate-y-6 lg:translate-y-8"
         >
-          <img 
-            src="https://images.unsplash.com/photo-1517705008128-361805f42e86?auto=format&fit=crop&q=80&w=1000" 
-            alt="People Drinking Coffee" 
-            className="w-full h-full object-cover" 
-            referrerPolicy="no-referrer" 
+          <img
+            src="https://images.unsplash.com/photo-1517705008128-361805f42e86?auto=format&fit=crop&q=80&w=1000"
+            alt="Pessoas compartilhando café"
+            className="h-full w-full object-cover object-center"
+            referrerPolicy="no-referrer"
           />
         </motion.div>
       </div>
@@ -645,32 +695,32 @@ const Experience = () => (
 );
 
 const CTA = () => (
-  <section className="py-64 px-8 text-center bg-white wood-texture relative overflow-hidden">
+  <section className="snap-section relative min-h-[100dvh] max-h-[100dvh] flex flex-col items-center justify-center text-center bg-white wood-texture overflow-hidden px-6 py-12">
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 1.2 }}
-      className="relative z-10"
+      transition={{ duration: 1 }}
+      className="relative z-10 max-w-3xl mx-auto"
     >
-      <h2 className="text-coffee-dark mb-16">
+      <h2 className="text-coffee-dark mb-8 md:mb-10 text-[clamp(1.5rem,5vmin,3.5rem)] leading-[1.1] font-serif font-medium tracking-tight">
         Leve mais do que café. <br />
         <span className="italic font-light text-coffee-accent">Leve propósito.</span>
       </h2>
-      <button className="btn-premium text-xl uppercase tracking-[0.4em] px-24 py-8">
-        Comprar agora
-      </button>
+      <a href="#products" className="btn-premium inline-block text-sm md:text-base uppercase tracking-[0.35em] px-12 md:px-16 py-5 md:py-6">
+        Ver cafés
+      </a>
     </motion.div>
-    <div className="absolute inset-0 kraft-texture opacity-5 pointer-events-none" />
+    <div className="absolute inset-0 kraft-texture opacity-[0.06] pointer-events-none" />
   </section>
 );
 
 const Footer = () => (
-  <footer className="bg-coffee-dark text-coffee-beige py-32 px-8">
+  <footer className="bg-coffee-dark text-coffee-beige py-16 md:py-20 px-6 md:px-8">
     <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
-      <Logo className="h-24 mb-16" light />
-      
-      <div className="flex flex-wrap justify-center gap-16 mb-20 text-[12px] font-black uppercase tracking-[0.3em] text-coffee-beige/60">
+      <Logo className="h-16 md:h-20 mb-10 md:mb-12" light />
+
+      <div className="flex flex-wrap justify-center gap-x-10 gap-y-4 mb-12 md:mb-14 text-[11px] md:text-[12px] font-black uppercase tracking-[0.3em] text-coffee-beige/60">
         <a href="#home" className="hover:text-white transition-colors">Início</a>
         <a href="#origin" className="hover:text-white transition-colors">Origem</a>
         <a href="#products" className="hover:text-white transition-colors">Cafés</a>
@@ -681,7 +731,7 @@ const Footer = () => (
         </a>
       </div>
 
-      <div className="w-full max-w-2xl h-[1px] bg-white/10 mb-16" />
+      <div className="w-full max-w-2xl h-px bg-white/10 mb-10 md:mb-12" />
       
       <p className="text-white/20 text-[11px] uppercase tracking-[0.5em] font-bold">
         © 2026 JCCoffee. Semeando fé, colhendo propósito.
@@ -722,7 +772,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <section id="admin" className="py-32 px-6 md:px-8 bg-white min-h-screen">
+    <section id="admin" className="py-32 px-6 md:px-8 bg-white min-h-screen [scroll-snap-align:none]">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-16 gap-8">
           <div>
