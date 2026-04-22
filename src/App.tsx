@@ -613,29 +613,32 @@ const Story = () => (
     </div>
     <div className="absolute inset-0 z-[1] bg-gradient-to-b from-coffee-dark/85 via-coffee-dark/75 to-coffee-dark/90" />
 
-    <div className="max-w-4xl mx-auto w-full text-center relative z-10 min-h-0 flex flex-col justify-center max-h-[88vh]">
+    <div className="max-w-4xl mx-auto w-full text-center relative z-10 min-h-0 flex flex-col justify-center max-h-[88vh] overflow-y-auto overscroll-contain pr-1">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 1 }}
-        className="flex flex-col justify-center min-h-0"
+        className="flex flex-col justify-center min-h-0 py-2"
       >
         <span className="text-coffee-accent uppercase tracking-[0.45em] text-[10px] md:text-[11px] font-black mb-4 md:mb-5 block shrink-0">
           Nossa Herança
         </span>
-        <h2 className="text-coffee-beige mb-5 md:mb-6 text-[clamp(1.35rem,4.5vmin,3.25rem)] font-serif leading-[1.12] tracking-tight font-medium shrink-0">
-          Uma história real de fé e resiliência.
+        <h2 className="text-coffee-beige mb-5 md:mb-6 text-[clamp(1.35rem,4.5vmin,3.25rem)] font-serif leading-[1.12] tracking-tight font-medium shrink-0 text-balance">
+          O café é mais do que um hábito. É uma experiência.
         </h2>
-        <div className="space-y-4 md:space-y-5 text-coffee-beige/88 text-[clamp(0.85rem,2.2vmin,1.35rem)] leading-relaxed font-medium italic text-pretty text-balance min-h-0">
-          <p>
-            Na JC COFFEE, cada xícara carrega tempo, origem e significado — não só sabor, mas encontros e histórias.
+        <div className="space-y-4 md:space-y-[1.125rem] text-coffee-beige/88 text-[clamp(0.8rem,2vmin,1.2rem)] leading-relaxed font-medium text-pretty text-balance min-h-0 text-left md:text-center">
+          <p className="italic">
+            Na JC COFFEE, acreditamos que cada xícara carrega tempo, origem e significado. Não se trata apenas do sabor — mas da atmosfera que ele cria, dos encontros que inspira e das histórias que desperta.
           </p>
-          <p>
-            Nossa essência vem de uma herança real: gerações que viveram do café e encontraram propósito nele.
+          <p className="italic">
+            Nossa essência nasce de uma herança real. Gerações que viveram do café, que encontraram nele sustento e propósito. Mesmo quando o tempo mudou os caminhos, a conexão permaneceu — silenciosa, mas presente.
           </p>
-          <p className="text-coffee-beige font-serif not-italic text-[clamp(1rem,2.5vmin,1.5rem)] pt-1">
+          <p className="text-coffee-beige font-serif not-italic text-[clamp(1rem,2.4vmin,1.45rem)] pt-1">
             Foi dessa memória que surgiu a JC COFFEE.
+          </p>
+          <p className="not-italic leading-relaxed">
+            Uma marca construída sobre respeito à origem, seleção criteriosa e atenção absoluta a cada detalhe. Trabalhamos diretamente com produtores, valorizando processos autênticos e garantindo que cada grão expresse sua verdadeira identidade.
           </p>
         </div>
         <div className="mt-6 md:mt-8 w-20 md:w-24 h-0.5 bg-coffee-accent mx-auto shrink-0" />
