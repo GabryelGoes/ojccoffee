@@ -927,88 +927,90 @@ export default function App() {
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="fixed inset-0 m-auto w-full max-w-md h-fit bg-coffee-beige z-[110] rounded-[3rem] p-12 text-center coffee-shadow"
+                className="fixed inset-x-4 top-1/2 -translate-y-1/2 mx-auto w-full max-w-lg max-h-[min(92dvh,720px)] overflow-hidden bg-coffee-beige z-[110] rounded-2xl md:rounded-3xl px-5 py-5 md:px-7 md:py-6 text-center coffee-shadow flex flex-col"
               >
-                <Logo className="h-20 mb-12 mx-auto" />
-                <h2 className="text-3xl font-serif text-coffee-dark mb-4">
-                  {authMode === 'signup' ? 'Crie sua conta para assinar.' : 'Entre para gerenciar sua assinatura.'}
+                <Logo className="h-11 md:h-12 mb-3 mx-auto shrink-0" />
+                <h2 className="text-lg md:text-xl font-serif text-coffee-dark mb-1 leading-tight">
+                  {authMode === 'signup' ? 'Crie sua conta para assinar' : 'Entre na sua conta'}
                 </h2>
-                <p className="text-coffee-brown/60 mb-8 font-medium italic">
-                  Cadastro profissional com seus dados e acesso seguro.
+                <p className="text-coffee-brown/60 mb-3 text-xs md:text-sm leading-snug">
+                  Seus dados e acesso seguro.
                 </p>
 
-                <form onSubmit={handleEmailAuthSubmit} className="space-y-4 text-left mb-6">
+                <form onSubmit={handleEmailAuthSubmit} className="space-y-2 text-left mb-3 flex-1 min-h-0 flex flex-col">
                   {authMode === 'signup' && (
-                    <input
-                      type="text"
-                      value={authFullName}
-                      onChange={(e) => setAuthFullName(e.target.value)}
-                      placeholder="Nome completo"
-                      className="w-full bg-white border border-coffee-brown/10 rounded-xl px-4 py-3 text-coffee-dark"
-                      autoComplete="name"
-                      required
-                    />
-                  )}
-                  {authMode === 'signup' && (
-                    <input
-                      type="tel"
-                      value={authPhone}
-                      onChange={(e) => setAuthPhone(e.target.value)}
-                      placeholder="Telefone (WhatsApp)"
-                      className="w-full bg-white border border-coffee-brown/10 rounded-xl px-4 py-3 text-coffee-dark"
-                      autoComplete="tel"
-                    />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <input
+                        type="text"
+                        value={authFullName}
+                        onChange={(e) => setAuthFullName(e.target.value)}
+                        placeholder="Nome completo"
+                        className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
+                        autoComplete="name"
+                        required
+                      />
+                      <input
+                        type="tel"
+                        value={authPhone}
+                        onChange={(e) => setAuthPhone(e.target.value)}
+                        placeholder="Telefone / WhatsApp"
+                        className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
+                        autoComplete="tel"
+                      />
+                    </div>
                   )}
                   <input
                     type="email"
                     value={authEmail}
                     onChange={(e) => setAuthEmail(e.target.value)}
-                    placeholder="Seu e-mail"
-                    className="w-full bg-white border border-coffee-brown/10 rounded-xl px-4 py-3 text-coffee-dark"
+                    placeholder="E-mail"
+                    className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
                     autoComplete="email"
                     required
                   />
-                  <input
-                    type="password"
-                    value={authPassword}
-                    onChange={(e) => setAuthPassword(e.target.value)}
-                    placeholder="Sua senha"
-                    className="w-full bg-white border border-coffee-brown/10 rounded-xl px-4 py-3 text-coffee-dark"
-                    autoComplete={authMode === 'signup' ? 'new-password' : 'current-password'}
-                    minLength={6}
-                    required
-                  />
-                  {authMode === 'signup' && (
+                  <div className={authMode === 'signup' ? 'grid grid-cols-1 sm:grid-cols-2 gap-2' : ''}>
                     <input
                       type="password"
-                      value={authPasswordConfirm}
-                      onChange={(e) => setAuthPasswordConfirm(e.target.value)}
-                      placeholder="Confirmar senha"
-                      className="w-full bg-white border border-coffee-brown/10 rounded-xl px-4 py-3 text-coffee-dark"
-                      autoComplete="new-password"
+                      value={authPassword}
+                      onChange={(e) => setAuthPassword(e.target.value)}
+                      placeholder="Senha"
+                      className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
+                      autoComplete={authMode === 'signup' ? 'new-password' : 'current-password'}
                       minLength={6}
                       required
                     />
-                  )}
+                    {authMode === 'signup' && (
+                      <input
+                        type="password"
+                        value={authPasswordConfirm}
+                        onChange={(e) => setAuthPasswordConfirm(e.target.value)}
+                        placeholder="Confirmar senha"
+                        className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
+                        autoComplete="new-password"
+                        minLength={6}
+                        required
+                      />
+                    )}
+                  </div>
                   {authError && (
-                    <p className="text-sm text-red-600 font-medium">{authError}</p>
+                    <p className="text-xs text-red-600 font-medium leading-tight">{authError}</p>
                   )}
                   <button
                     type="submit"
                     disabled={authLoading}
-                    className="w-full btn-premium py-4 text-sm disabled:opacity-60"
+                    className="w-full btn-premium py-2.5 text-xs mt-1 disabled:opacity-60"
                   >
                     {authLoading ? 'Processando...' : authMode === 'signup' ? 'Criar conta' : 'Entrar com e-mail'}
                   </button>
                 </form>
 
-                <div className="space-y-3">
+                <div className="shrink-0 space-y-2">
                   <button 
                     onClick={handleAuthWithGoogle}
                     disabled={authLoading}
-                    className="w-full flex items-center justify-center gap-4 bg-white border border-coffee-brown/10 py-4 rounded-2xl text-coffee-dark font-bold hover:bg-coffee-beige transition-all disabled:opacity-60"
+                    className="w-full flex items-center justify-center gap-2 bg-white border border-coffee-brown/10 py-2.5 rounded-xl text-coffee-dark text-sm font-bold hover:bg-coffee-beige transition-all disabled:opacity-60"
                   >
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" className="w-6 h-6" />
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" className="w-5 h-5" />
                     {authMode === 'signup' ? 'Cadastrar com Google' : 'Entrar com Google'}
                   </button>
                 </div>
@@ -1020,11 +1022,11 @@ export default function App() {
                     setAuthPasswordConfirm('');
                     setAuthMode(authMode === 'signup' ? 'signin' : 'signup');
                   }}
-                  className="mt-6 text-xs font-black uppercase tracking-widest text-coffee-accent hover:opacity-70 transition-opacity"
+                  className="mt-3 text-[10px] font-black uppercase tracking-widest text-coffee-accent hover:opacity-70 transition-opacity"
                 >
                   {authMode === 'signup' ? 'Já tenho conta' : 'Quero criar conta'}
                 </button>
-                <button onClick={closeAuthModal} className="mt-4 text-[10px] uppercase font-black tracking-widest text-coffee-brown/40 hover:text-coffee-dark transition-colors">
+                <button onClick={closeAuthModal} className="mt-2 text-[9px] uppercase font-black tracking-widest text-coffee-brown/40 hover:text-coffee-dark transition-colors">
                   Voltar ao site
                 </button>
               </motion.div>

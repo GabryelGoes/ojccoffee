@@ -1,0 +1,22 @@
+---
+description: Após cada alteração solicitada pelo utilizador, fazer commit e push automaticamente
+alwaysApply: true
+---
+
+# Git: commit e push após alterações
+
+Quando completares alterações de código ou ficheiros de configuração **pedidas explicitamente** pelo utilizador:
+
+1. **Antes de encerrar a tarefa**, executa no repositório:
+   - `git status` para confirmar o que mudou.
+   - `git add` apenas dos ficheiros relevantes a esse pedido (evita incluir lixo acidental).
+   - `git commit -m "mensagem clara em português"` descrevendo o que foi feito e porquê, em frases completas.
+   - `git push` para o branch atual (normalmente `main`).
+
+2. **Se não houver mudanças** (já tudo commitado), não forces commit vazio.
+
+3. **Se o push falhar** (rede, autenticação, conflitos), explica o erro ao utilizador e indica o que falta resolver; não assumes que o push correu.
+
+4. Não substituis isto por "instruções para o utilizador executar git" — deves executar os comandos no ambiente real.
+
+5. Exceção: se o utilizador disser explicitamente para **não** commitar ou para trabalhar só localmente, respeita isso nessa tarefa.
