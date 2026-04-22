@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect, createContext, useContext } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import { Coffee, MapPin, ArrowRight, Instagram, Menu, X, Check, Star, Shield, Zap, Heart, ShoppingBag, User, LogOut, LayoutDashboard, Package, Users, Calendar, ExternalLink } from 'lucide-react';
-import { auth, db, signInWithGoogle, signInWithApple, signInWithEmailPassword, signUpWithEmailPassword, logout, ensureUserProfile } from './firebase';
-import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
-import { doc, getDoc, collection, onSnapshot, query, where, serverTimestamp, updateDoc, getDocs } from 'firebase/firestore';
+import { auth, db, signInWithGoogle, signInWithEmailPassword, signUpWithEmailPassword, logout, ensureUserProfile } from './firebase';
+import { onAuthStateChanged, updateProfile, User as FirebaseUser } from 'firebase/auth';
+import { doc, getDoc, setDoc, collection, onSnapshot, query, where, serverTimestamp, updateDoc, getDocs } from 'firebase/firestore';
 
 // --- Context ---
 const AuthContext = createContext<{
@@ -663,8 +663,11 @@ export default function App() {
   const [isCommitmentOpen, setIsCommitmentOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<any>(null);
   const [authMode, setAuthMode] = useState<'signup' | 'signin'>('signup');
+  const [authFullName, setAuthFullName] = useState('');
+  const [authPhone, setAuthPhone] = useState('');
   const [authEmail, setAuthEmail] = useState('');
   const [authPassword, setAuthPassword] = useState('');
+  const [authPasswordConfirm, setAuthPasswordConfirm] = useState('');
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
 
@@ -711,11 +714,15 @@ export default function App() {
     setIsLoginOpen(false);
     setAuthError(null);
     setAuthLoading(false);
+    setAuthPassword('');
+    setAuthPasswordConfirm('');
   };
 
   const handleOpenAuthForSubscription = () => {
     setAuthMode('signup');
     setAuthError(null);
+    setAuthPassword('');
+    setAuthPasswordConfirm('');
     setIsLoginOpen(true);
   };
 
@@ -723,25 +730,16 @@ export default function App() {
     try {
       setAuthLoading(true);
       setAuthError(null);
-      await signInWithGoogle();
-      closeAuthModal();
+      const result = await signInWithGoogle();
+      if (result?.user) {
+        await ensureUserProfile(result.user);
+        closeAuthModal();
+      } else {
+        setAuthError('Redirecionando para o Google...');
+      }
     } catch (error) {
       console.error('Erro ao entrar com Google:', error);
-      setAuthError('Não foi possível autenticar com Google. Tente novamente.');
-    } finally {
-      setAuthLoading(false);
-    }
-  };
-
-  const handleAuthWithApple = async () => {
-    try {
-      setAuthLoading(true);
-      setAuthError(null);
-      await signInWithApple();
-      closeAuthModal();
-    } catch (error) {
-      console.error('Erro ao entrar com Apple:', error);
-      setAuthError('Apple não configurado ou indisponível no momento. Use e-mail/senha ou Google.');
+      setAuthError('Não foi possível autenticar com Google. Verifique se o provedor Google está habilitado no Firebase Auth e tente novamente.');
     } finally {
       setAuthLoading(false);
     }
@@ -750,9 +748,19 @@ export default function App() {
   const handleEmailAuthSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const email = authEmail.trim().toLowerCase();
+    const fullName = authFullName.trim();
+    const phone = authPhone.trim();
 
     if (!email || !authPassword) {
       setAuthError('Preencha e-mail e senha.');
+      return;
+    }
+    if (authMode === 'signup' && !fullName) {
+      setAuthError('Informe seu nome completo para criar a conta.');
+      return;
+    }
+    if (authMode === 'signup' && authPassword !== authPasswordConfirm) {
+      setAuthError('As senhas não coincidem.');
       return;
     }
     if (authPassword.length < 6) {
@@ -764,12 +772,30 @@ export default function App() {
       setAuthLoading(true);
       setAuthError(null);
       if (authMode === 'signup') {
-        await signUpWithEmailPassword(email, authPassword);
+        const credential = await signUpWithEmailPassword(email, authPassword);
+        if (fullName) {
+          await updateProfile(credential.user, { displayName: fullName });
+        }
+        await setDoc(
+          doc(db, 'users', credential.user.uid),
+          {
+            uid: credential.user.uid,
+            email,
+            displayName: fullName || credential.user.displayName || '',
+            phone: phone || null,
+            role: 'customer',
+            createdAt: serverTimestamp(),
+          },
+          { merge: true }
+        );
       } else {
         await signInWithEmailPassword(email, authPassword);
       }
+      setAuthFullName('');
+      setAuthPhone('');
       setAuthEmail('');
       setAuthPassword('');
+      setAuthPasswordConfirm('');
       closeAuthModal();
     } catch (error) {
       console.error('Erro na autenticação por e-mail:', error);
@@ -908,10 +934,31 @@ export default function App() {
                   {authMode === 'signup' ? 'Crie sua conta para assinar.' : 'Entre para gerenciar sua assinatura.'}
                 </h2>
                 <p className="text-coffee-brown/60 mb-8 font-medium italic">
-                  Cadastro rápido com e-mail/senha, Google ou Apple.
+                  Cadastro profissional com seus dados e acesso seguro.
                 </p>
 
                 <form onSubmit={handleEmailAuthSubmit} className="space-y-4 text-left mb-6">
+                  {authMode === 'signup' && (
+                    <input
+                      type="text"
+                      value={authFullName}
+                      onChange={(e) => setAuthFullName(e.target.value)}
+                      placeholder="Nome completo"
+                      className="w-full bg-white border border-coffee-brown/10 rounded-xl px-4 py-3 text-coffee-dark"
+                      autoComplete="name"
+                      required
+                    />
+                  )}
+                  {authMode === 'signup' && (
+                    <input
+                      type="tel"
+                      value={authPhone}
+                      onChange={(e) => setAuthPhone(e.target.value)}
+                      placeholder="Telefone (WhatsApp)"
+                      className="w-full bg-white border border-coffee-brown/10 rounded-xl px-4 py-3 text-coffee-dark"
+                      autoComplete="tel"
+                    />
+                  )}
                   <input
                     type="email"
                     value={authEmail}
@@ -931,6 +978,18 @@ export default function App() {
                     minLength={6}
                     required
                   />
+                  {authMode === 'signup' && (
+                    <input
+                      type="password"
+                      value={authPasswordConfirm}
+                      onChange={(e) => setAuthPasswordConfirm(e.target.value)}
+                      placeholder="Confirmar senha"
+                      className="w-full bg-white border border-coffee-brown/10 rounded-xl px-4 py-3 text-coffee-dark"
+                      autoComplete="new-password"
+                      minLength={6}
+                      required
+                    />
+                  )}
                   {authError && (
                     <p className="text-sm text-red-600 font-medium">{authError}</p>
                   )}
@@ -950,20 +1009,15 @@ export default function App() {
                     className="w-full flex items-center justify-center gap-4 bg-white border border-coffee-brown/10 py-4 rounded-2xl text-coffee-dark font-bold hover:bg-coffee-beige transition-all disabled:opacity-60"
                   >
                     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" className="w-6 h-6" />
-                    Entrar com Google
-                  </button>
-                  <button
-                    onClick={handleAuthWithApple}
-                    disabled={authLoading}
-                    className="w-full flex items-center justify-center gap-4 bg-coffee-dark text-coffee-beige py-4 rounded-2xl font-bold hover:bg-coffee-brown transition-all disabled:opacity-60"
-                  >
-                    Entrar com Apple
+                    {authMode === 'signup' ? 'Cadastrar com Google' : 'Entrar com Google'}
                   </button>
                 </div>
 
                 <button
                   onClick={() => {
                     setAuthError(null);
+                    setAuthPassword('');
+                    setAuthPasswordConfirm('');
                     setAuthMode(authMode === 'signup' ? 'signin' : 'signup');
                   }}
                   className="mt-6 text-xs font-black uppercase tracking-widest text-coffee-accent hover:opacity-70 transition-opacity"
