@@ -1039,7 +1039,7 @@ export default function App() {
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
                 className="fixed inset-x-4 top-1/2 -translate-y-1/2 mx-auto w-full max-w-lg max-h-[min(92dvh,800px)] overflow-hidden bg-coffee-beige z-[110] rounded-2xl md:rounded-3xl px-5 py-5 md:px-7 md:py-6 text-center coffee-shadow flex flex-col"
               >
-                <Logo className="h-[4.25rem] md:h-[5.25rem] mb-3 mx-auto shrink-0" premiumTint />
+                <Logo className="h-[6.375rem] md:h-[7.875rem] mb-3 mx-auto shrink-0" premiumTint />
                 <h2 className="text-lg md:text-xl font-serif text-coffee-dark mb-1 leading-tight">
                   {authMode === 'signup' ? 'Crie sua conta' : 'Entre na sua conta'}
                 </h2>
