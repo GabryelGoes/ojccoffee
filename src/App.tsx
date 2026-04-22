@@ -1078,11 +1078,18 @@ export default function App() {
                 </p>
 
                 <div
-                  className={`flex-1 min-h-0 flex flex-col -mx-1 px-1 ${
-                    authMode === 'signup' ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden'
+                  className={`flex flex-col -mx-1 px-1 ${
+                    authMode === 'signup'
+                      ? 'shrink-0 flex-none overflow-hidden'
+                      : 'flex-1 min-h-0 overflow-y-auto overflow-x-hidden'
                   }`}
                 >
-                <form onSubmit={handleEmailAuthSubmit} className={`${authFormSpace} text-left mb-2 flex flex-col min-h-0 pb-0`}>
+                <form
+                  onSubmit={handleEmailAuthSubmit}
+                  className={`${authFormSpace} text-left flex flex-col min-h-0 pb-0 ${
+                    authMode === 'signup' ? 'mb-0' : 'mb-2'
+                  }`}
+                >
                   {authMode === 'signup' && (
                     <>
                       <div className={`grid grid-cols-2 ${authGridGap}`}>
@@ -1236,7 +1243,7 @@ export default function App() {
                 </form>
                 </div>
 
-                <div className={`shrink-0 ${authMode === 'signup' ? 'space-y-1.5' : 'space-y-2'}`}>
+                <div className={`shrink-0 ${authMode === 'signup' ? 'space-y-1.5 -mt-1' : 'space-y-2'}`}>
                   <button 
                     type="button"
                     onClick={handleAuthWithGoogle}
