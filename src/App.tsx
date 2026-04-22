@@ -1005,6 +1005,13 @@ export default function App() {
     }
   };
 
+  const authFieldClass =
+    authMode === 'signup'
+      ? 'w-full bg-white border border-coffee-brown/10 rounded-md px-2 py-1.5 text-[13px] leading-snug text-coffee-dark min-w-0'
+      : 'w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark';
+  const authGridGap = authMode === 'signup' ? 'gap-1.5' : 'gap-2';
+  const authFormSpace = authMode === 'signup' ? 'space-y-1.5' : 'space-y-2';
+
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center bg-coffee-beige">
@@ -1037,29 +1044,54 @@ export default function App() {
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="fixed inset-x-4 top-1/2 -translate-y-1/2 mx-auto w-full max-w-lg max-h-[min(92dvh,800px)] overflow-hidden bg-coffee-beige z-[110] rounded-2xl md:rounded-3xl px-5 py-5 md:px-7 md:py-6 text-center coffee-shadow flex flex-col"
+                className={`fixed mx-auto w-full bg-coffee-beige z-[110] rounded-2xl md:rounded-3xl text-center coffee-shadow flex flex-col overflow-hidden ${
+                  authMode === 'signup'
+                    ? 'inset-x-3 top-3 bottom-3 max-h-[calc(100dvh-24px)] max-w-2xl px-4 py-3 md:px-6 md:py-4 justify-start min-h-0'
+                    : 'inset-x-4 top-1/2 -translate-y-1/2 max-h-[min(92dvh,800px)] max-w-lg px-5 py-5 md:px-7 md:py-6'
+                }`}
               >
-                <Logo className="h-[6.375rem] md:h-[7.875rem] mb-3 mx-auto shrink-0" premiumTint />
-                <h2 className="text-lg md:text-xl font-serif text-coffee-dark mb-1 leading-tight">
+                <Logo
+                  className={
+                    authMode === 'signup'
+                      ? 'h-12 md:h-14 mb-1.5 mx-auto shrink-0'
+                      : 'h-[6.375rem] md:h-[7.875rem] mb-3 mx-auto shrink-0'
+                  }
+                  premiumTint
+                />
+                <h2
+                  className={`font-serif text-coffee-dark mb-0.5 leading-tight shrink-0 ${
+                    authMode === 'signup' ? 'text-base md:text-lg' : 'text-lg md:text-xl'
+                  }`}
+                >
                   {authMode === 'signup' ? 'Crie sua conta' : 'Entre na sua conta'}
                 </h2>
-                <p className="text-coffee-brown/60 mb-3 text-xs md:text-sm leading-snug shrink-0">
+                <p
+                  className={`text-coffee-brown/60 leading-snug shrink-0 ${
+                    authMode === 'signup'
+                      ? 'mb-2 text-[10px] md:text-[11px] line-clamp-2'
+                      : 'mb-3 text-xs md:text-sm'
+                  }`}
+                >
                   {authMode === 'signup'
-                    ? 'Preencha e-mail, telefone, CPF e endereço. CPF é validado automaticamente.'
+                    ? 'E-mail, telefone, CPF e endereço — validação automática do CPF.'
                     : 'Acesse com e-mail e senha ou use o Google.'}
                 </p>
 
-                <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden -mx-1 px-1">
-                <form onSubmit={handleEmailAuthSubmit} className="space-y-2 text-left mb-3 flex flex-col pb-1">
+                <div
+                  className={`flex-1 min-h-0 flex flex-col -mx-1 px-1 ${
+                    authMode === 'signup' ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden'
+                  }`}
+                >
+                <form onSubmit={handleEmailAuthSubmit} className={`${authFormSpace} text-left mb-2 flex flex-col min-h-0 pb-0`}>
                   {authMode === 'signup' && (
                     <>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div className={`grid grid-cols-2 ${authGridGap}`}>
                         <input
                           type="email"
                           value={authEmail}
                           onChange={(e) => setAuthEmail(e.target.value)}
                           placeholder="E-mail"
-                          className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
+                          className={authFieldClass}
                           autoComplete="email"
                           inputMode="email"
                           required
@@ -1068,20 +1100,20 @@ export default function App() {
                           type="tel"
                           value={authPhone}
                           onChange={(e) => setAuthPhone(e.target.value)}
-                          placeholder="Telefone / WhatsApp"
-                          className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
+                          placeholder="Telefone"
+                          className={authFieldClass}
                           autoComplete="tel"
                           required
                         />
                       </div>
-                      <div>
+                      <div className="min-h-0 shrink">
                         <div className="relative">
                           <input
                             type="text"
                             value={authCpf}
                             onChange={(e) => setAuthCpf(formatCpfMask(e.target.value))}
                             placeholder="CPF"
-                            className={`w-full bg-white border rounded-lg px-3 py-2 pr-10 text-sm text-coffee-dark ${
+                            className={`${authFieldClass} pr-9 ${
                               digitsOnly(authCpf).length === 11
                                 ? isValidCpf(authCpf)
                                   ? 'border-green-600 ring-1 ring-green-600/30'
@@ -1097,27 +1129,27 @@ export default function App() {
                           />
                           {digitsOnly(authCpf).length === 11 && isValidCpf(authCpf) && (
                             <Check
-                              className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-green-600"
+                              className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-green-600"
                               strokeWidth={3}
                               aria-hidden={true}
                             />
                           )}
                         </div>
-                        <p id="auth-cpf-hint" className="mt-1 text-[10px] leading-tight text-coffee-brown/50">
+                        <p id="auth-cpf-hint" className="mt-0.5 text-[9px] leading-none text-coffee-brown/45">
                           {digitsOnly(authCpf).length === 11
                             ? isValidCpf(authCpf)
                               ? 'CPF válido.'
-                              : 'CPF inválido — verifique os números.'
-                            : 'Digite os 11 dígitos do CPF.'}
+                              : 'CPF inválido.'
+                            : '11 dígitos.'}
                         </p>
                       </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div className={`grid grid-cols-2 ${authGridGap}`}>
                         <input
                           type="text"
                           value={authCep}
                           onChange={(e) => setAuthCep(formatCepMask(e.target.value))}
                           placeholder="CEP"
-                          className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
+                          className={authFieldClass}
                           autoComplete="postal-code"
                           inputMode="numeric"
                           required
@@ -1128,7 +1160,7 @@ export default function App() {
                           value={authCity}
                           onChange={(e) => setAuthCity(e.target.value)}
                           placeholder="Cidade"
-                          className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
+                          className={authFieldClass}
                           autoComplete="address-level2"
                           required
                         />
@@ -1137,18 +1169,18 @@ export default function App() {
                         type="text"
                         value={authAddress}
                         onChange={(e) => setAuthAddress(e.target.value)}
-                        placeholder="Endereço completo (rua, número, complemento)"
-                        className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
+                        placeholder="Endereço (rua, nº, compl.)"
+                        className={authFieldClass}
                         autoComplete="street-address"
                         required
                       />
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div className={`grid grid-cols-2 ${authGridGap}`}>
                         <input
                           type="password"
                           value={authPassword}
                           onChange={(e) => setAuthPassword(e.target.value)}
                           placeholder="Senha"
-                          className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
+                          className={authFieldClass}
                           autoComplete="new-password"
                           minLength={6}
                           required
@@ -1157,8 +1189,8 @@ export default function App() {
                           type="password"
                           value={authPasswordConfirm}
                           onChange={(e) => setAuthPasswordConfirm(e.target.value)}
-                          placeholder="Confirmar senha"
-                          className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
+                          placeholder="Confirmar"
+                          className={authFieldClass}
                           autoComplete="new-password"
                           minLength={6}
                           required
@@ -1173,7 +1205,7 @@ export default function App() {
                         value={authEmail}
                         onChange={(e) => setAuthEmail(e.target.value)}
                         placeholder="E-mail"
-                        className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
+                        className={authFieldClass}
                         autoComplete="email"
                         required
                       />
@@ -1182,7 +1214,7 @@ export default function App() {
                         value={authPassword}
                         onChange={(e) => setAuthPassword(e.target.value)}
                         placeholder="Senha"
-                        className="w-full bg-white border border-coffee-brown/10 rounded-lg px-3 py-2 text-sm text-coffee-dark"
+                        className={authFieldClass}
                         autoComplete="current-password"
                         minLength={6}
                         required
@@ -1195,20 +1227,25 @@ export default function App() {
                   <button
                     type="submit"
                     disabled={authLoading || (authMode === 'signup' && digitsOnly(authCpf).length === 11 && !isValidCpf(authCpf))}
-                    className="w-full btn-premium py-2.5 text-xs mt-1 disabled:opacity-60"
+                    className={`w-full btn-premium font-bold disabled:opacity-60 ${
+                      authMode === 'signup' ? 'py-2 text-[11px] mt-0.5' : 'py-2.5 text-xs mt-1'
+                    }`}
                   >
                     {authLoading ? 'Processando...' : authMode === 'signup' ? 'Criar conta' : 'Entrar com e-mail'}
                   </button>
                 </form>
                 </div>
 
-                <div className="shrink-0 space-y-2">
+                <div className={`shrink-0 ${authMode === 'signup' ? 'space-y-1.5' : 'space-y-2'}`}>
                   <button 
+                    type="button"
                     onClick={handleAuthWithGoogle}
                     disabled={authLoading}
-                    className="w-full flex items-center justify-center gap-2 bg-white border border-coffee-brown/10 py-2.5 rounded-xl text-coffee-dark text-sm font-bold hover:bg-coffee-beige transition-all disabled:opacity-60"
+                    className={`w-full flex items-center justify-center gap-2 bg-white border border-coffee-brown/10 rounded-xl text-coffee-dark font-bold hover:bg-coffee-beige transition-all disabled:opacity-60 ${
+                      authMode === 'signup' ? 'py-2 text-xs' : 'py-2.5 text-sm'
+                    }`}
                   >
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" className="w-5 h-5" />
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" className={authMode === 'signup' ? 'w-4 h-4' : 'w-5 h-5'} />
                     {authMode === 'signup' ? 'Cadastrar com Google' : 'Entrar com Google'}
                   </button>
                 </div>
@@ -1228,11 +1265,13 @@ export default function App() {
                     }
                     setAuthMode(authMode === 'signup' ? 'signin' : 'signup');
                   }}
-                  className="mt-3 text-[10px] font-black uppercase tracking-widest text-coffee-accent hover:opacity-70 transition-opacity"
+                  className={`text-[10px] font-black uppercase tracking-widest text-coffee-accent hover:opacity-70 transition-opacity ${
+                    authMode === 'signup' ? 'mt-2' : 'mt-3'
+                  }`}
                 >
                   {authMode === 'signup' ? 'Já tenho conta' : 'Quero criar conta'}
                 </button>
-                <button onClick={closeAuthModal} className="mt-2 text-[9px] uppercase font-black tracking-widest text-coffee-brown/40 hover:text-coffee-dark transition-colors">
+                <button onClick={closeAuthModal} className={`text-[9px] uppercase font-black tracking-widest text-coffee-brown/40 hover:text-coffee-dark transition-colors ${authMode === 'signup' ? 'mt-1' : 'mt-2'}`}>
                   Voltar ao site
                 </button>
               </motion.div>
