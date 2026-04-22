@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, createContext, useContext } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import { Coffee, MapPin, ArrowRight, Instagram, Menu, X, Check, Star, Shield, Zap, Heart, ShoppingBag, User, LogOut, LayoutDashboard, Package, Users, Calendar, ExternalLink } from 'lucide-react';
-import { auth, db, signInWithGoogle, logout, ensureUserProfile } from './firebase';
+import { auth, db, signInWithGoogle, signInWithApple, signInWithEmailPassword, signUpWithEmailPassword, logout, ensureUserProfile } from './firebase';
 import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 import { doc, getDoc, collection, onSnapshot, query, where, serverTimestamp, updateDoc, getDocs } from 'firebase/firestore';
 
@@ -662,6 +662,11 @@ export default function App() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isCommitmentOpen, setIsCommitmentOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<any>(null);
+  const [authMode, setAuthMode] = useState<'signup' | 'signin'>('signup');
+  const [authEmail, setAuthEmail] = useState('');
+  const [authPassword, setAuthPassword] = useState('');
+  const [authLoading, setAuthLoading] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (u) => {
@@ -702,15 +707,97 @@ export default function App() {
     };
   };
 
+  const closeAuthModal = () => {
+    setIsLoginOpen(false);
+    setAuthError(null);
+    setAuthLoading(false);
+  };
+
+  const handleOpenAuthForSubscription = () => {
+    setAuthMode('signup');
+    setAuthError(null);
+    setIsLoginOpen(true);
+  };
+
+  const handleAuthWithGoogle = async () => {
+    try {
+      setAuthLoading(true);
+      setAuthError(null);
+      await signInWithGoogle();
+      closeAuthModal();
+    } catch (error) {
+      console.error('Erro ao entrar com Google:', error);
+      setAuthError('Não foi possível autenticar com Google. Tente novamente.');
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleAuthWithApple = async () => {
+    try {
+      setAuthLoading(true);
+      setAuthError(null);
+      await signInWithApple();
+      closeAuthModal();
+    } catch (error) {
+      console.error('Erro ao entrar com Apple:', error);
+      setAuthError('Apple não configurado ou indisponível no momento. Use e-mail/senha ou Google.');
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleEmailAuthSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const email = authEmail.trim().toLowerCase();
+
+    if (!email || !authPassword) {
+      setAuthError('Preencha e-mail e senha.');
+      return;
+    }
+    if (authPassword.length < 6) {
+      setAuthError('A senha precisa ter pelo menos 6 caracteres.');
+      return;
+    }
+
+    try {
+      setAuthLoading(true);
+      setAuthError(null);
+      if (authMode === 'signup') {
+        await signUpWithEmailPassword(email, authPassword);
+      } else {
+        await signInWithEmailPassword(email, authPassword);
+      }
+      setAuthEmail('');
+      setAuthPassword('');
+      closeAuthModal();
+    } catch (error) {
+      console.error('Erro na autenticação por e-mail:', error);
+      setAuthError(
+        authMode === 'signup'
+          ? 'Não foi possível criar sua conta. Verifique os dados e tente novamente.'
+          : 'Não foi possível entrar. Verifique e-mail/senha e tente novamente.'
+      );
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
   const addToCart = (item: any) => {
+    if (!user) {
+      handleOpenAuthForSubscription();
+      return;
+    }
     setSelectedPlan(item);
     setIsCommitmentOpen(true);
   };
 
   const confirmSubscription = async () => {
     if (!selectedPlan) return;
-    const identity = resolveCheckoutIdentity();
-    if (!identity) return;
+    if (!user?.email) {
+      handleOpenAuthForSubscription();
+      return;
+    }
 
     try {
       const amount = Number(String(selectedPlan.price).replace(',', '.'));
@@ -720,8 +807,8 @@ export default function App() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: identity.userId,
-          payerEmail: identity.payerEmail,
+          userId: user.uid,
+          payerEmail: user.email,
           planId: selectedPlan.id,
           planName: selectedPlan.name,
           amount,
@@ -807,7 +894,7 @@ export default function App() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                onClick={() => setIsLoginOpen(false)}
+                onClick={closeAuthModal}
                 className="fixed inset-0 bg-coffee-dark/80 backdrop-blur-md z-[100]"
               />
               <motion.div 
@@ -817,19 +904,73 @@ export default function App() {
                 className="fixed inset-0 m-auto w-full max-w-md h-fit bg-coffee-beige z-[110] rounded-[3rem] p-12 text-center coffee-shadow"
               >
                 <Logo className="h-20 mb-12 mx-auto" />
-                <h2 className="text-3xl font-serif text-coffee-dark mb-6">Sua jornada começa aqui.</h2>
-                <p className="text-coffee-brown/60 mb-12 font-medium italic">Faça login para acessar o Monte Club e gerenciar suas assinaturas.</p>
-                <button 
+                <h2 className="text-3xl font-serif text-coffee-dark mb-4">
+                  {authMode === 'signup' ? 'Crie sua conta para assinar.' : 'Entre para gerenciar sua assinatura.'}
+                </h2>
+                <p className="text-coffee-brown/60 mb-8 font-medium italic">
+                  Cadastro rápido com e-mail/senha, Google ou Apple.
+                </p>
+
+                <form onSubmit={handleEmailAuthSubmit} className="space-y-4 text-left mb-6">
+                  <input
+                    type="email"
+                    value={authEmail}
+                    onChange={(e) => setAuthEmail(e.target.value)}
+                    placeholder="Seu e-mail"
+                    className="w-full bg-white border border-coffee-brown/10 rounded-xl px-4 py-3 text-coffee-dark"
+                    autoComplete="email"
+                    required
+                  />
+                  <input
+                    type="password"
+                    value={authPassword}
+                    onChange={(e) => setAuthPassword(e.target.value)}
+                    placeholder="Sua senha"
+                    className="w-full bg-white border border-coffee-brown/10 rounded-xl px-4 py-3 text-coffee-dark"
+                    autoComplete={authMode === 'signup' ? 'new-password' : 'current-password'}
+                    minLength={6}
+                    required
+                  />
+                  {authError && (
+                    <p className="text-sm text-red-600 font-medium">{authError}</p>
+                  )}
+                  <button
+                    type="submit"
+                    disabled={authLoading}
+                    className="w-full btn-premium py-4 text-sm disabled:opacity-60"
+                  >
+                    {authLoading ? 'Processando...' : authMode === 'signup' ? 'Criar conta' : 'Entrar com e-mail'}
+                  </button>
+                </form>
+
+                <div className="space-y-3">
+                  <button 
+                    onClick={handleAuthWithGoogle}
+                    disabled={authLoading}
+                    className="w-full flex items-center justify-center gap-4 bg-white border border-coffee-brown/10 py-4 rounded-2xl text-coffee-dark font-bold hover:bg-coffee-beige transition-all disabled:opacity-60"
+                  >
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" className="w-6 h-6" />
+                    Entrar com Google
+                  </button>
+                  <button
+                    onClick={handleAuthWithApple}
+                    disabled={authLoading}
+                    className="w-full flex items-center justify-center gap-4 bg-coffee-dark text-coffee-beige py-4 rounded-2xl font-bold hover:bg-coffee-brown transition-all disabled:opacity-60"
+                  >
+                    Entrar com Apple
+                  </button>
+                </div>
+
+                <button
                   onClick={() => {
-                    signInWithGoogle();
-                    setIsLoginOpen(false);
+                    setAuthError(null);
+                    setAuthMode(authMode === 'signup' ? 'signin' : 'signup');
                   }}
-                  className="w-full flex items-center justify-center gap-4 bg-white border border-coffee-brown/10 py-6 rounded-2xl text-coffee-dark font-bold hover:bg-coffee-beige transition-all"
+                  className="mt-6 text-xs font-black uppercase tracking-widest text-coffee-accent hover:opacity-70 transition-opacity"
                 >
-                  <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" className="w-6 h-6" />
-                  Entrar com Google
+                  {authMode === 'signup' ? 'Já tenho conta' : 'Quero criar conta'}
                 </button>
-                <button onClick={() => setIsLoginOpen(false)} className="mt-8 text-[10px] uppercase font-black tracking-widest text-coffee-brown/40 hover:text-coffee-dark transition-colors">
+                <button onClick={closeAuthModal} className="mt-4 text-[10px] uppercase font-black tracking-widest text-coffee-brown/40 hover:text-coffee-dark transition-colors">
                   Voltar ao site
                 </button>
               </motion.div>
