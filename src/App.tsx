@@ -527,7 +527,7 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
           </p>
         </div>
 
-        <div className="flex md:grid md:grid-cols-3 md:gap-6 lg:gap-8 md:items-stretch min-h-0 flex-1 gap-4 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-2 -mx-2 px-2 md:mx-0 md:px-0 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-coffee-brown/25">
+        <div className="flex md:grid md:grid-cols-3 md:gap-6 lg:gap-8 md:items-stretch min-h-0 flex-1 gap-4 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-2 -mx-2 px-2 md:mx-0 md:px-0 [&>*]:min-w-0 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-coffee-brown/25">
           {plans.map((plan, idx) => (
             <motion.div
               key={plan.id}
@@ -535,16 +535,20 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.12, duration: 0.75 }}
-              className={`group relative flex h-full min-h-[min(520px,78vh)] md:min-h-[480px] flex-col shrink-0 w-[min(88vw,320px)] md:w-auto snap-center rounded-[1.75rem] p-6 md:p-7 pt-9 transition-all duration-300 ${
+              className={`group relative flex h-full min-h-[560px] flex-col shrink-0 w-[min(88vw,320px)] md:w-auto snap-center rounded-[1.75rem] p-6 md:p-7 pt-8 transition-all duration-300 min-w-0 ${
                 plan.popular
-                  ? 'z-10 bg-gradient-to-b from-coffee-dark via-coffee-dark to-coffee-green text-coffee-beige shadow-[0_24px_48px_-12px_rgba(14,55,12,0.45)] ring-2 ring-coffee-accent/35 md:scale-[1.02] md:-my-1'
+                  ? 'z-10 bg-gradient-to-b from-coffee-dark via-coffee-dark to-coffee-green text-coffee-beige shadow-[0_24px_48px_-12px_rgba(14,55,12,0.45)] ring-2 ring-coffee-accent/35'
                   : 'bg-white border border-coffee-brown/[0.12] shadow-[0_12px_40px_-8px_rgba(61,43,31,0.12)] hover:border-coffee-brown/20 hover:shadow-[0_16px_48px_-12px_rgba(61,43,31,0.18)]'
               }`}
             >
-              {plan.popular && (
-                <div className="absolute -top-0 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full bg-coffee-accent px-4 py-1.5 text-[9px] font-black uppercase tracking-[0.28em] text-white shadow-md">
-                  Mais escolhido
+              {plan.popular ? (
+                <div className="mb-4 flex min-h-[2rem] shrink-0 items-center justify-center">
+                  <span className="rounded-full bg-coffee-accent px-4 py-1.5 text-[9px] font-black uppercase tracking-[0.28em] text-white shadow-md">
+                    Mais escolhido
+                  </span>
                 </div>
+              ) : (
+                <div className="mb-4 min-h-[2rem] shrink-0" aria-hidden={true} />
               )}
 
               <div className="mb-5 flex items-start justify-between gap-3">
@@ -556,13 +560,15 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
                   >
                     {plan.name}
                   </h3>
-                  <p
-                    className={`mt-2 text-sm leading-snug ${
-                      plan.popular ? 'text-coffee-beige/70' : 'text-coffee-brown/65'
-                    }`}
-                  >
-                    {plan.description}
-                  </p>
+                  <div className="mt-2 min-h-[4.5rem] md:min-h-[5rem]">
+                    <p
+                      className={`text-sm leading-snug ${
+                        plan.popular ? 'text-coffee-beige/70' : 'text-coffee-brown/65'
+                      }`}
+                    >
+                      {plan.description}
+                    </p>
+                  </div>
                 </div>
                 <div
                   className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${
@@ -599,7 +605,7 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
               </div>
 
               <ul
-                className={`mb-6 flex flex-1 flex-col gap-2.5 border-t pt-5 text-left ${
+                className={`flex min-h-0 flex-1 flex-col gap-2.5 border-t pt-5 text-left ${
                   plan.popular ? 'border-white/15' : 'border-coffee-brown/[0.1]'
                 }`}
               >
@@ -613,7 +619,7 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
                       <Check className="h-3 w-3" strokeWidth={3} aria-hidden />
                     </span>
                     <span
-                      className={`text-[13px] leading-snug md:text-sm ${
+                      className={`min-w-0 flex-1 text-[13px] leading-snug md:text-sm ${
                         plan.popular ? 'text-coffee-beige/90' : 'text-coffee-brown/85'
                       }`}
                     >
@@ -626,7 +632,7 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
               <button
                 type="button"
                 onClick={() => onAddToCart({ ...plan, kind: 'plan' })}
-                className={`mt-auto w-full rounded-2xl py-3.5 text-[10px] font-black uppercase tracking-[0.28em] transition-all ${
+                className={`mt-auto w-full shrink-0 rounded-2xl py-3.5 text-[10px] font-black uppercase tracking-[0.28em] transition-all ${
                   plan.popular
                     ? 'bg-coffee-beige text-coffee-dark shadow-md hover:bg-white active:scale-[0.99]'
                     : 'bg-coffee-dark text-coffee-beige shadow-md hover:bg-coffee-brown active:scale-[0.99]'
