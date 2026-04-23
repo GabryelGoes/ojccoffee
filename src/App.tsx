@@ -794,7 +794,7 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
 const Story = () => (
   <section
     id="story"
-    className="snap-section relative min-h-[100dvh] max-h-[100dvh] flex flex-col items-center justify-center overflow-hidden px-5 md:px-10 py-10 md:py-12 bg-coffee-dark text-coffee-beige"
+    className="snap-section relative flex min-h-[100dvh] flex-col items-center justify-center overflow-x-hidden px-5 py-12 md:px-10 md:py-14 bg-coffee-dark text-coffee-beige"
   >
     <div className="absolute inset-0 z-0 opacity-[0.22] pointer-events-none">
       <img
@@ -806,7 +806,7 @@ const Story = () => (
     </div>
     <div className="absolute inset-0 z-[1] bg-gradient-to-b from-coffee-dark/85 via-coffee-dark/75 to-coffee-dark/90" />
 
-    <div className="max-w-4xl mx-auto w-full text-center relative z-10 min-h-0 flex flex-col justify-center max-h-[88vh] overflow-y-auto overscroll-contain pr-1">
+    <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col justify-center text-center">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
