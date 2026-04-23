@@ -376,8 +376,31 @@ const Origin = () => (
   </section>
 );
 
+type SelectionProduct = {
+  id: string;
+  name: string;
+  description: string;
+  notes: string;
+  price: string;
+  shipping: string;
+  image: string;
+  tag: string;
+  features: string[];
+};
+
 const Products = ({ onAddToCart }: { onAddToCart: (item: Record<string, unknown>) => void }) => {
-  const products = [
+  const [openProductId, setOpenProductId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!openProductId) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpenProductId(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [openProductId]);
+
+  const products: SelectionProduct[] = [
     {
       id: 'cafarnaum',
       name: 'Cafarnaum',
@@ -413,6 +436,17 @@ const Products = ({ onAddToCart }: { onAddToCart: (item: Record<string, unknown>
     },
   ];
 
+  const activeProduct = openProductId ? products.find((p) => p.id === openProductId) ?? null : null;
+
+  const cartPayload = (p: SelectionProduct) => ({
+    kind: 'product' as const,
+    id: p.id,
+    name: p.name,
+    price: p.price,
+    shipping: p.shipping,
+    notes: p.notes,
+  });
+
   return (
     <section
       id="products"
@@ -426,12 +460,12 @@ const Products = ({ onAddToCart }: { onAddToCart: (item: Record<string, unknown>
           <h2 className="mb-2 font-serif text-[clamp(1.65rem,4vmin,3.25rem)] font-medium leading-tight tracking-tight text-coffee-dark">
             Nossas Seleções
           </h2>
-          <p className="mx-auto max-w-2xl px-2 font-medium italic leading-snug text-coffee-brown/65 text-[clamp(0.85rem,2vmin,1.35rem)]">
-            Grãos especiais em embalagens Kraft — mesmo cuidado visual do Monte Club, para levar quando quiser.
+          <p className="mx-auto max-w-xl px-2 font-medium leading-snug text-coffee-brown/65 text-[clamp(0.85rem,2vmin,1.2rem)]">
+            Toque na imagem para ver perfil, preço e notas. Adicione ao carrinho direto da vitrine ou do detalhe.
           </p>
         </div>
 
-        <div className="-mx-2 flex min-h-0 gap-4 overflow-x-auto overflow-y-visible px-2 pb-1 pt-1 snap-x snap-mandatory md:grid md:grid-cols-3 md:items-stretch md:gap-6 md:overflow-visible md:snap-none lg:gap-8 [&>*]:min-w-0 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-coffee-brown/25">
+        <div className="-mx-2 flex min-h-0 gap-4 overflow-x-auto overflow-y-visible px-2 pb-1 pt-1 snap-x snap-mandatory md:grid md:grid-cols-3 md:items-start md:gap-6 md:overflow-visible md:snap-none lg:gap-8 [&>*]:min-w-0 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-coffee-brown/25">
           {products.map((product, idx) => (
             <motion.div
               key={product.id}
@@ -439,82 +473,138 @@ const Products = ({ onAddToCart }: { onAddToCart: (item: Record<string, unknown>
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.12, duration: 0.75 }}
-              className="group relative flex h-full min-h-[min(520px,82vh)] w-[min(88vw,320px)] shrink-0 snap-center flex-col rounded-[1.75rem] border border-coffee-brown/[0.12] bg-white p-5 pt-6 shadow-[0_12px_40px_-8px_rgba(61,43,31,0.12)] transition-all duration-300 hover:border-coffee-brown/20 hover:shadow-[0_16px_48px_-12px_rgba(61,43,31,0.18)] md:min-h-[540px] md:w-auto md:p-6 md:pt-8"
+              className="flex w-[min(88vw,300px)] shrink-0 snap-center flex-col gap-3 md:w-auto"
             >
-              <div className="relative mb-4 overflow-hidden rounded-2xl ring-1 ring-coffee-brown/[0.06] md:mb-5">
-                <div className="aspect-[16/10] max-h-[140px] overflow-hidden md:max-h-[160px]">
+              <button
+                type="button"
+                onClick={() => setOpenProductId(product.id)}
+                className="group relative w-full overflow-hidden rounded-2xl border border-coffee-brown/[0.1] bg-coffee-beige shadow-[0_12px_36px_-14px_rgba(61,43,31,0.22)] ring-1 ring-coffee-brown/[0.04] transition-all duration-300 hover:border-coffee-brown/25 hover:shadow-[0_18px_44px_-12px_rgba(61,43,31,0.28)] focus:outline-none focus-visible:ring-2 focus-visible:ring-coffee-accent focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                aria-label={`Abrir detalhes de ${product.name}`}
+              >
+                <div className="aspect-[3/4] w-full overflow-hidden">
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.03]"
+                    className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.04]"
                     referrerPolicy="no-referrer"
                   />
                 </div>
-                <div className="absolute left-3 top-3 rounded-full bg-coffee-dark px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.26em] text-coffee-beige md:left-4 md:top-4 md:text-[10px]">
-                  {product.tag}
-                </div>
-              </div>
-
-              <div className="mb-4 flex items-start justify-between gap-3 md:mb-5">
-                <div className="min-w-0 flex-1 text-left">
-                  <h3 className="font-serif text-xl font-medium leading-[1.15] tracking-tight text-coffee-dark md:text-2xl">{product.name}</h3>
-                  <div className="mt-1.5 min-h-[3.25rem] md:min-h-[3.5rem]">
-                    <p className="text-sm leading-snug text-coffee-brown/65">{product.description}</p>
-                  </div>
-                  <p className="mt-2 text-[11px] font-medium italic leading-snug text-coffee-brown/50 md:text-xs">{product.notes}</p>
-                </div>
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-coffee-beige text-coffee-dark">
-                  <Coffee className="h-5 w-5" strokeWidth={2} aria-hidden />
-                </div>
-              </div>
-
-              <div className="mb-4 rounded-2xl bg-coffee-beige/80 px-4 py-3.5 ring-1 ring-coffee-brown/[0.06] md:mb-5 md:py-4">
-                <div className="flex items-end justify-center gap-1">
-                  <span className="pb-1 text-sm font-bold text-coffee-brown/70">R$</span>
-                  <span className="font-serif text-4xl font-bold tabular-nums leading-none tracking-tight md:text-[2.75rem]">{product.price}</span>
-                  <span className="pb-1.5 text-[10px] font-semibold uppercase tracking-widest text-coffee-brown/45">un.</span>
-                </div>
-                <p className="mt-3 text-center text-[10px] font-black uppercase tracking-[0.2em] text-coffee-accent">{product.shipping}</p>
-              </div>
-
-              <ul className="flex min-h-0 flex-1 flex-col gap-2 border-t border-coffee-brown/[0.1] pt-4 text-left md:gap-2.5 md:pt-5">
-                {product.features.map((feature, fIdx) => (
-                  <li key={fIdx} className="flex gap-3">
-                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-coffee-dark/10 text-coffee-dark">
-                      <Check className="h-3 w-3" strokeWidth={3} aria-hidden />
-                    </span>
-                    <span className="min-w-0 flex-1 text-[13px] leading-snug text-coffee-brown/85 md:text-sm">{feature}</span>
-                  </li>
-                ))}
-              </ul>
+              </button>
 
               <button
                 type="button"
-                onClick={() =>
-                  onAddToCart({
-                    kind: 'product',
-                    id: product.id,
-                    name: product.name,
-                    price: product.price,
-                    shipping: product.shipping,
-                    notes: product.notes,
-                  })
-                }
-                className="mt-auto w-full shrink-0 rounded-2xl bg-coffee-dark py-3.5 text-[10px] font-black uppercase tracking-[0.28em] text-coffee-beige shadow-md transition-all hover:bg-coffee-brown active:scale-[0.99]"
+                onClick={() => onAddToCart(cartPayload(product))}
+                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-coffee-dark py-3.5 text-[10px] font-black uppercase tracking-[0.26em] text-coffee-beige shadow-md transition-all hover:bg-coffee-brown active:scale-[0.99]"
               >
+                <ShoppingBag className="h-4 w-4 shrink-0 opacity-90" strokeWidth={2} aria-hidden />
                 Adicionar ao carrinho
               </button>
             </motion.div>
           ))}
         </div>
 
-        <div className="mt-3 shrink-0 space-y-1 text-center">
-          <p className="text-[9px] font-black uppercase tracking-[0.28em] text-coffee-brown/45 md:text-[10px]">
-            Preço por saca · Frete calculado no checkout
-          </p>
+        <div className="mt-4 shrink-0 space-y-1 text-center">
+          <p className="text-[10px] text-coffee-brown/45 md:text-[11px]">Frete calculado no checkout · R$ 69,90 por saca</p>
           <p className="text-[10px] text-coffee-brown/40 md:hidden">Deslize para ver os cafés</p>
         </div>
       </div>
+
+      <AnimatePresence>
+        {activeProduct && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setOpenProductId(null)}
+              className="fixed inset-0 z-[82] bg-coffee-dark/65 backdrop-blur-sm"
+            />
+            <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="product-modal-title"
+              initial={{ opacity: 0, y: 24, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 16, scale: 0.98 }}
+              transition={{ type: 'spring', damping: 28, stiffness: 320 }}
+              className="fixed inset-x-4 top-[max(1rem,8dvh)] z-[83] mx-auto flex max-h-[min(680px,calc(100dvh-2rem))] max-w-lg flex-col overflow-hidden rounded-[1.75rem] border border-coffee-brown/[0.12] bg-coffee-beige shadow-[0_24px_64px_-16px_rgba(61,43,31,0.35)] md:inset-x-auto md:left-1/2 md:top-1/2 md:w-full md:-translate-x-1/2 md:-translate-y-1/2"
+            >
+              <div className="relative shrink-0 overflow-hidden">
+                <div className="aspect-[16/10] max-h-[200px] w-full sm:max-h-[220px]">
+                  <img
+                    src={activeProduct.image}
+                    alt={activeProduct.name}
+                    className="h-full w-full object-cover object-center"
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
+                <div className="absolute left-0 top-0 h-full w-full bg-gradient-to-t from-coffee-dark/50 to-transparent" />
+                <button
+                  type="button"
+                  onClick={() => setOpenProductId(null)}
+                  className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-coffee-beige/95 text-coffee-dark shadow-md transition-colors hover:bg-white"
+                  aria-label="Fechar"
+                >
+                  <X className="h-5 w-5" strokeWidth={2} />
+                </button>
+                <div className="absolute bottom-4 left-5 right-16">
+                  <span className="mb-1 inline-block rounded-full bg-coffee-dark/90 px-3 py-1 text-[9px] font-black uppercase tracking-[0.26em] text-coffee-beige">
+                    {activeProduct.tag}
+                  </span>
+                  <h3 id="product-modal-title" className="font-serif text-2xl font-medium leading-tight text-white drop-shadow-md md:text-[1.65rem]">
+                    {activeProduct.name}
+                  </h3>
+                </div>
+              </div>
+
+              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-6 pt-5 md:px-6 md:pb-8 md:pt-6">
+                <div className="mb-5 flex items-start justify-between gap-4">
+                  <div className="min-w-0 flex-1">
+                    <div className="min-h-[3rem] md:min-h-[3.25rem]">
+                      <p className="text-sm leading-snug text-coffee-brown/75">{activeProduct.description}</p>
+                    </div>
+                    <p className="mt-2 text-[12px] font-medium italic leading-snug text-coffee-brown/55">{activeProduct.notes}</p>
+                  </div>
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white text-coffee-dark shadow-sm ring-1 ring-coffee-brown/[0.08]">
+                    <Coffee className="h-5 w-5" strokeWidth={2} aria-hidden />
+                  </div>
+                </div>
+
+                <div className="mb-6 rounded-2xl bg-white px-4 py-4 shadow-sm ring-1 ring-coffee-brown/[0.08]">
+                  <div className="flex items-end justify-center gap-1">
+                    <span className="pb-1 text-sm font-bold text-coffee-brown/70">R$</span>
+                    <span className="font-serif text-4xl font-bold tabular-nums leading-none tracking-tight">{activeProduct.price}</span>
+                    <span className="pb-1.5 text-[10px] font-semibold uppercase tracking-widest text-coffee-brown/45">un.</span>
+                  </div>
+                  <p className="mt-3 text-center text-[10px] font-black uppercase tracking-[0.2em] text-coffee-accent">{activeProduct.shipping}</p>
+                </div>
+
+                <ul className="mb-6 space-y-2.5 border-t border-coffee-brown/[0.1] pt-5">
+                  {activeProduct.features.map((feature, fIdx) => (
+                    <li key={fIdx} className="flex gap-3">
+                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-coffee-dark/10 text-coffee-dark">
+                        <Check className="h-3 w-3" strokeWidth={3} aria-hidden />
+                      </span>
+                      <span className="min-w-0 flex-1 text-[13px] leading-snug text-coffee-brown/85 md:text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    onAddToCart(cartPayload(activeProduct));
+                    setOpenProductId(null);
+                  }}
+                  className="w-full rounded-2xl bg-coffee-dark py-3.5 text-[10px] font-black uppercase tracking-[0.28em] text-coffee-beige shadow-md transition-all hover:bg-coffee-brown active:scale-[0.99]"
+                >
+                  Adicionar ao carrinho
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
