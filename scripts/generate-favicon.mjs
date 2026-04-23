@@ -1,6 +1,6 @@
 /**
  * Gera public/favicon.png a partir da logo: mantém o alpha, aplica #0E370C,
- * remove bordas vazias (trim), zoom leve e canvas 512px (melhor na aba / retina).
+ * trim, canvas 512px e margem interna para a arte não “estourar” na aba.
  */
 import sharp from 'sharp';
 import { resolve } from 'path';
@@ -11,29 +11,33 @@ const root = resolve(__dirname, '..');
 
 const COFFEE_DARK = { r: 14, g: 55, b: 12 }; // --color-coffee-dark
 const OUT = 512;
-const ZOOM = 1.14;
+/** Quanto da caixa o desenho pode ocupar (margem ao redor ≈ metade de 1 − INSET_SCALE). */
+const INSET_SCALE = 0.68;
 
 const srcPath = resolve(root, 'public/logo-jccoffee.png');
 
 const trimmed = await sharp(srcPath).trim({ threshold: 2 }).toBuffer();
-const meta = await sharp(trimmed).metadata();
-if (!meta.width || !meta.height) throw new Error('Metadados inválidos após trim');
 
-const zw = Math.round(meta.width * ZOOM);
-const zh = Math.round(meta.height * ZOOM);
+const maxInner = Math.floor(OUT * INSET_SCALE);
 
-const enlarged = await sharp(trimmed)
-  .resize(zw, zh, {
+const inner = await sharp(trimmed)
+  .resize(maxInner, maxInner, {
     fit: 'inside',
     withoutEnlargement: false,
   })
+  .ensureAlpha()
+  .png()
   .toBuffer();
 
-const { data, info } = await sharp(enlarged)
-  .resize(OUT, OUT, {
-    fit: 'cover',
-    position: 'centre',
-  })
+const { data, info } = await sharp({
+  create: {
+    width: OUT,
+    height: OUT,
+    channels: 4,
+    background: { r: 0, g: 0, b: 0, alpha: 0 },
+  },
+})
+  .composite([{ input: inner, gravity: 'centre' }])
   .ensureAlpha()
   .raw()
   .toBuffer({ resolveWithObject: true });
@@ -57,4 +61,4 @@ await sharp(outBuf, {
   .png()
   .toFile(resolve(root, 'public/favicon.png'));
 
-console.log(`OK: public/favicon.png (${info.width}x${info.height})`);
+console.log(`OK: public/favicon.png (${info.width}x${info.height}), inset ~${Math.round((1 - INSET_SCALE) * 50)}% margem`);
