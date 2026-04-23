@@ -419,7 +419,7 @@ const Products = ({ onAddToCart }: { onAddToCart: (item: Record<string, unknown>
       notes: 'Mel Silvestre, Floral e Notas Cítricas',
       price: '69,90',
       shipping: '+ frete',
-      image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=2070',
+      image: '/monte-carmelo.png',
       tag: 'Elevação',
       features: ['Mel silvestre e floral', 'Acidez cítrica limpa', 'Torra média-clara · saca 250g'],
     },
