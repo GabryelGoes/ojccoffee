@@ -503,7 +503,7 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
   return (
     <section
       id="monte-club"
-      className="snap-section relative min-h-[100dvh] max-h-[100dvh] flex flex-col justify-center overflow-hidden bg-coffee-beige kraft-texture px-4 md:px-8 py-8 md:py-10"
+      className="snap-section relative flex min-h-[100dvh] flex-col justify-center overflow-x-hidden bg-coffee-beige kraft-texture px-4 pb-12 pt-10 md:px-8 md:pb-14 md:pt-12"
     >
       <div className="absolute bottom-0 left-0 right-0 h-32 opacity-[0.06] pointer-events-none">
         <svg viewBox="0 0 1440 120" className="w-full h-full" preserveAspectRatio="none">
@@ -514,7 +514,7 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
         </svg>
       </div>
 
-      <div className="max-w-7xl mx-auto relative z-10 w-full min-h-0 flex flex-col flex-1 justify-center">
+      <div className="max-w-7xl mx-auto relative z-10 flex w-full flex-col justify-center">
         <div className="text-center mb-4 md:mb-6 shrink-0">
           <span className="text-coffee-accent uppercase tracking-[0.45em] text-[10px] md:text-[11px] font-black mb-1.5 md:mb-2 block">
             Assinatura
@@ -527,7 +527,7 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
           </p>
         </div>
 
-        <div className="flex md:grid md:grid-cols-3 md:gap-6 lg:gap-8 md:items-stretch min-h-0 flex-1 gap-4 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-2 -mx-2 px-2 md:mx-0 md:px-0 [&>*]:min-w-0 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-coffee-brown/25">
+        <div className="-mx-2 flex min-h-0 gap-4 overflow-x-auto overflow-y-visible pb-1 pt-1 px-2 snap-x snap-mandatory md:grid md:grid-cols-3 md:items-stretch md:gap-6 md:overflow-visible md:snap-none lg:gap-8 [&>*]:min-w-0 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-coffee-brown/25">
           {plans.map((plan, idx) => (
             <motion.div
               key={plan.id}
@@ -535,7 +535,7 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.12, duration: 0.75 }}
-              className={`group relative flex h-full min-h-[560px] flex-col shrink-0 w-[min(88vw,320px)] md:w-auto snap-center rounded-[1.75rem] p-6 md:p-7 pt-8 transition-all duration-300 min-w-0 ${
+              className={`group relative flex h-full min-h-[min(540px,85vh)] flex-col shrink-0 w-[min(88vw,320px)] snap-center rounded-[1.75rem] p-6 md:min-h-[560px] md:w-auto md:py-7 md:px-7 pt-8 transition-all duration-300 min-w-0 ${
                 plan.popular
                   ? 'z-10 bg-gradient-to-b from-coffee-dark via-coffee-dark to-coffee-green text-coffee-beige shadow-[0_24px_48px_-12px_rgba(14,55,12,0.45)] ring-2 ring-coffee-accent/35'
                   : 'bg-white border border-coffee-brown/[0.12] shadow-[0_12px_40px_-8px_rgba(61,43,31,0.12)] hover:border-coffee-brown/20 hover:shadow-[0_16px_48px_-12px_rgba(61,43,31,0.18)]'
