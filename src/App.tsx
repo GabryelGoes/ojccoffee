@@ -430,7 +430,7 @@ const Products = ({ onAddToCart }: { onAddToCart: (item: Record<string, unknown>
       notes: 'Castanhas, Amêndoas e Corpo Intenso',
       price: '69,90',
       shipping: '+ frete',
-      image: 'https://images.unsplash.com/photo-1497933322477-911f0cbb5b53?auto=format&fit=crop&q=80&w=2070',
+      image: '/monte-sinai.png',
       tag: 'A Lei',
       features: ['Castanhas e amêndoas torradas', 'Corpo encorpado', 'Torra média-escura · saca 250g'],
     },
