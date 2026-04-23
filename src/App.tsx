@@ -408,7 +408,7 @@ const Products = ({ onAddToCart }: { onAddToCart: (item: Record<string, unknown>
       notes: 'Chocolate, Avelã e Frutas Vermelhas',
       price: '69,90',
       shipping: '+ frete',
-      image: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&q=80&w=2070',
+      image: '/cafarnaum.png',
       tag: 'O Princípio',
       features: ['Chocolate e avelã na xícara', 'Notas de frutas vermelhas', 'Torra média · saca 250g'],
     },
