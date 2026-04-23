@@ -515,7 +515,7 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10 flex w-full flex-col justify-center">
-        <div className="text-center mb-4 md:mb-6 shrink-0">
+        <div className="text-center mb-3 shrink-0 md:mb-5">
           <span className="text-coffee-accent uppercase tracking-[0.45em] text-[10px] md:text-[11px] font-black mb-1.5 md:mb-2 block">
             Assinatura
           </span>
@@ -535,23 +535,21 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.12, duration: 0.75 }}
-              className={`group relative flex h-full min-h-[min(540px,85vh)] flex-col shrink-0 w-[min(88vw,320px)] snap-center rounded-[1.75rem] p-6 md:min-h-[560px] md:w-auto md:py-7 md:px-7 pt-8 transition-all duration-300 min-w-0 ${
+              className={`group relative flex h-full min-h-[min(520px,82vh)] flex-col shrink-0 w-[min(88vw,320px)] snap-center rounded-[1.75rem] p-5 pt-7 md:min-h-[540px] md:w-auto md:p-6 md:pt-8 transition-all duration-300 min-w-0 ${
                 plan.popular
                   ? 'z-10 bg-gradient-to-b from-coffee-dark via-coffee-dark to-coffee-green text-coffee-beige shadow-[0_24px_48px_-12px_rgba(14,55,12,0.45)] ring-2 ring-coffee-accent/35'
                   : 'bg-white border border-coffee-brown/[0.12] shadow-[0_12px_40px_-8px_rgba(61,43,31,0.12)] hover:border-coffee-brown/20 hover:shadow-[0_16px_48px_-12px_rgba(61,43,31,0.18)]'
               }`}
             >
-              {plan.popular ? (
-                <div className="mb-4 flex min-h-[2rem] shrink-0 items-center justify-center">
-                  <span className="rounded-full bg-coffee-accent px-4 py-1.5 text-[9px] font-black uppercase tracking-[0.28em] text-white shadow-md">
+              {plan.popular && (
+                <div className="absolute -top-px left-1/2 z-20 -translate-x-1/2 -translate-y-1/2">
+                  <span className="inline-block rounded-full bg-coffee-accent px-3.5 py-1.5 text-[9px] font-black uppercase tracking-[0.26em] text-white shadow-md md:px-4">
                     Mais escolhido
                   </span>
                 </div>
-              ) : (
-                <div className="mb-4 min-h-[2rem] shrink-0" aria-hidden={true} />
               )}
 
-              <div className="mb-5 flex items-start justify-between gap-3">
+              <div className="mb-4 flex items-start justify-between gap-3 md:mb-5">
                 <div className="min-w-0 flex-1 text-left">
                   <h3
                     className={`font-serif text-xl md:text-2xl font-medium leading-[1.15] tracking-tight ${
@@ -560,7 +558,7 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
                   >
                     {plan.name}
                   </h3>
-                  <div className="mt-2 min-h-[4.5rem] md:min-h-[5rem]">
+                  <div className="mt-1.5 min-h-[3.25rem] md:min-h-[3.5rem]">
                     <p
                       className={`text-sm leading-snug ${
                         plan.popular ? 'text-coffee-beige/70' : 'text-coffee-brown/65'
@@ -580,7 +578,7 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
               </div>
 
               <div
-                className={`mb-5 rounded-2xl px-4 py-4 ${
+                className={`mb-4 rounded-2xl px-4 py-3.5 md:mb-5 md:py-4 ${
                   plan.popular ? 'bg-white/[0.08] ring-1 ring-white/10' : 'bg-coffee-beige/80 ring-1 ring-coffee-brown/[0.06]'
                 }`}
               >
@@ -605,7 +603,7 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
               </div>
 
               <ul
-                className={`flex min-h-0 flex-1 flex-col gap-2.5 border-t pt-5 text-left ${
+                className={`flex min-h-0 flex-1 flex-col gap-2 border-t pt-4 text-left md:gap-2.5 md:pt-5 ${
                   plan.popular ? 'border-white/15' : 'border-coffee-brown/[0.1]'
                 }`}
               >
