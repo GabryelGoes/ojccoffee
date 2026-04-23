@@ -481,7 +481,7 @@ const Products = ({ onAddToCart }: { onAddToCart: (item: Record<string, unknown>
                 className="group relative w-full overflow-hidden rounded-2xl border border-coffee-brown/[0.1] bg-coffee-beige shadow-[0_12px_36px_-14px_rgba(61,43,31,0.22)] ring-1 ring-coffee-brown/[0.04] transition-all duration-300 hover:border-coffee-brown/25 hover:shadow-[0_18px_44px_-12px_rgba(61,43,31,0.28)] focus:outline-none focus-visible:ring-2 focus-visible:ring-coffee-accent focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 aria-label={`Abrir detalhes de ${product.name}`}
               >
-                <div className="aspect-[3/4] w-full overflow-hidden">
+                <div className="aspect-[5/6] max-h-[min(42vw,228px)] w-full overflow-hidden sm:max-h-[min(38vw,248px)] md:max-h-[min(28vh,216px)]">
                   <img
                     src={product.image}
                     alt={product.name}
@@ -530,7 +530,7 @@ const Products = ({ onAddToCart }: { onAddToCart: (item: Record<string, unknown>
               className="fixed inset-x-4 top-[max(1rem,8dvh)] z-[83] mx-auto flex max-h-[min(680px,calc(100dvh-2rem))] max-w-lg flex-col overflow-hidden rounded-[1.75rem] border border-coffee-brown/[0.12] bg-coffee-beige shadow-[0_24px_64px_-16px_rgba(61,43,31,0.35)] md:inset-x-auto md:left-1/2 md:top-1/2 md:w-full md:-translate-x-1/2 md:-translate-y-1/2"
             >
               <div className="relative shrink-0 overflow-hidden">
-                <div className="aspect-[16/10] max-h-[200px] w-full sm:max-h-[220px]">
+                <div className="aspect-[16/10] max-h-[160px] w-full sm:max-h-[176px]">
                   <img
                     src={activeProduct.image}
                     alt={activeProduct.name}
