@@ -381,91 +381,139 @@ const Products = ({ onAddToCart }: { onAddToCart: (item: Record<string, unknown>
     {
       id: 'cafarnaum',
       name: 'Cafarnaum',
+      description: 'Perfil doce-frutado, corpo sedoso e final elegante.',
       notes: 'Chocolate, Avelã e Frutas Vermelhas',
-      price: '54,90',
+      price: '69,90',
+      shipping: '+ frete',
       image: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&q=80&w=2070',
       tag: 'O Princípio',
+      features: ['Chocolate e avelã na xícara', 'Notas de frutas vermelhas', 'Torra média · saca 250g'],
     },
     {
       id: 'carmelo',
       name: 'Carmelo',
+      description: 'Floral e vibrante, com acidez cítrica refinada.',
       notes: 'Mel Silvestre, Floral e Notas Cítricas',
-      price: '54,90',
+      price: '69,90',
+      shipping: '+ frete',
       image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=2070',
       tag: 'Elevação',
+      features: ['Mel silvestre e floral', 'Acidez cítrica limpa', 'Torra média-clara · saca 250g'],
     },
     {
       id: 'sinai',
       name: 'Sinai',
+      description: 'Corpo intenso, amanteigado e persistente.',
       notes: 'Castanhas, Amêndoas e Corpo Intenso',
-      price: '54,90',
+      price: '69,90',
+      shipping: '+ frete',
       image: 'https://images.unsplash.com/photo-1497933322477-911f0cbb5b53?auto=format&fit=crop&q=80&w=2070',
       tag: 'A Lei',
+      features: ['Castanhas e amêndoas torradas', 'Corpo encorpado', 'Torra média-escura · saca 250g'],
     },
   ];
 
   return (
     <section
       id="products"
-      className="snap-section relative min-h-[100dvh] max-h-[100dvh] flex flex-col justify-center overflow-hidden bg-white wood-texture px-4 md:px-8 py-8 md:py-10"
+      className="snap-section relative flex min-h-[100dvh] flex-col justify-center overflow-x-hidden overflow-y-visible bg-white wood-texture px-4 py-10 pb-12 md:px-8 md:py-12 md:pb-14"
     >
-      <div className="max-w-7xl mx-auto w-full min-h-0 flex flex-col flex-1 justify-center">
-        <div className="text-center mb-5 md:mb-8 shrink-0">
-          <h2 className="text-coffee-dark mb-3 md:mb-4 text-[clamp(1.65rem,4vmin,3.25rem)] leading-tight font-serif font-medium tracking-tight">
+      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-center">
+        <div className="mb-3 shrink-0 text-center md:mb-5">
+          <span className="mb-1.5 block text-[10px] font-black uppercase tracking-[0.45em] text-coffee-accent md:mb-2 md:text-[11px]">
+            Loja
+          </span>
+          <h2 className="mb-2 font-serif text-[clamp(1.65rem,4vmin,3.25rem)] font-medium leading-tight tracking-tight text-coffee-dark">
             Nossas Seleções
           </h2>
-          <p className="text-coffee-brown/65 font-medium leading-snug text-[clamp(0.85rem,2vmin,1.35rem)] max-w-2xl mx-auto px-2">
-            Grãos especiais em embalagens Kraft que preservam a alma do café.
+          <p className="mx-auto max-w-2xl px-2 font-medium italic leading-snug text-coffee-brown/65 text-[clamp(0.85rem,2vmin,1.35rem)]">
+            Grãos especiais em embalagens Kraft — mesmo cuidado visual do Monte Club, para levar quando quiser.
           </p>
         </div>
 
-        <div className="flex md:grid md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-2 md:pb-0 -mx-2 px-2 md:mx-0 md:px-0 min-h-0 flex-1 items-stretch [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-coffee-brown/20">
+        <div className="-mx-2 flex min-h-0 gap-4 overflow-x-auto overflow-y-visible px-2 pb-1 pt-1 snap-x snap-mandatory md:grid md:grid-cols-3 md:items-stretch md:gap-6 md:overflow-visible md:snap-none lg:gap-8 [&>*]:min-w-0 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-coffee-brown/25">
           {products.map((product, idx) => (
             <motion.div
               key={product.id}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: idx * 0.15, duration: 0.8 }}
-              className="group shrink-0 w-[min(88vw,340px)] md:w-auto snap-center flex flex-col min-h-0"
+              transition={{ delay: idx * 0.12, duration: 0.75 }}
+              className="group relative flex h-full min-h-[min(520px,82vh)] w-[min(88vw,320px)] shrink-0 snap-center flex-col rounded-[1.75rem] border border-coffee-brown/[0.12] bg-white p-5 pt-6 shadow-[0_12px_40px_-8px_rgba(61,43,31,0.12)] transition-all duration-300 hover:border-coffee-brown/20 hover:shadow-[0_16px_48px_-12px_rgba(61,43,31,0.18)] md:min-h-[540px] md:w-auto md:p-6 md:pt-8"
             >
-              <div className="relative mb-4 md:mb-5 rounded-2xl md:rounded-[1.75rem] overflow-hidden coffee-shadow bg-coffee-beige kraft-texture aspect-[3/4] max-h-[min(32vh,280px)] md:max-h-[min(38vh,340px)] lg:max-h-none">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="absolute inset-0 h-full w-full object-cover object-center opacity-95 transition-transform duration-700 md:group-hover:scale-[1.03]"
-                  referrerPolicy="no-referrer"
-                />
-                <div className="absolute top-3 left-3 md:top-4 md:left-4 bg-coffee-dark text-coffee-beige text-[9px] md:text-[10px] font-black uppercase tracking-[0.25em] px-4 py-2 rounded-full">
+              <div className="relative mb-4 overflow-hidden rounded-2xl ring-1 ring-coffee-brown/[0.06] md:mb-5">
+                <div className="aspect-[16/10] max-h-[140px] overflow-hidden md:max-h-[160px]">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.03]"
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
+                <div className="absolute left-3 top-3 rounded-full bg-coffee-dark px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.26em] text-coffee-beige md:left-4 md:top-4 md:text-[10px]">
                   {product.tag}
                 </div>
               </div>
-              <div className="text-center flex flex-col flex-1 min-h-0">
-                <h3 className="font-serif text-coffee-dark mb-2 text-xl md:text-2xl lg:text-3xl leading-tight">{product.name}</h3>
-                <p className="text-coffee-brown/65 text-xs md:text-sm italic mb-3 leading-snug line-clamp-2">{product.notes}</p>
-                <p className="text-coffee-dark font-serif text-lg md:text-xl font-bold mb-4">R$ {product.price}</p>
-                <button
-                  type="button"
-                  onClick={() =>
-                    onAddToCart({
-                      kind: 'product',
-                      id: product.id,
-                      name: product.name,
-                      price: product.price,
-                      notes: product.notes,
-                    })
-                  }
-                  className="btn-premium w-full text-[10px] md:text-xs uppercase tracking-widest py-3 md:py-3.5 mt-auto"
-                >
-                  Adicionar ao carrinho
-                </button>
+
+              <div className="mb-4 flex items-start justify-between gap-3 md:mb-5">
+                <div className="min-w-0 flex-1 text-left">
+                  <h3 className="font-serif text-xl font-medium leading-[1.15] tracking-tight text-coffee-dark md:text-2xl">{product.name}</h3>
+                  <div className="mt-1.5 min-h-[3.25rem] md:min-h-[3.5rem]">
+                    <p className="text-sm leading-snug text-coffee-brown/65">{product.description}</p>
+                  </div>
+                  <p className="mt-2 text-[11px] font-medium italic leading-snug text-coffee-brown/50 md:text-xs">{product.notes}</p>
+                </div>
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-coffee-beige text-coffee-dark">
+                  <Coffee className="h-5 w-5" strokeWidth={2} aria-hidden />
+                </div>
               </div>
+
+              <div className="mb-4 rounded-2xl bg-coffee-beige/80 px-4 py-3.5 ring-1 ring-coffee-brown/[0.06] md:mb-5 md:py-4">
+                <div className="flex items-end justify-center gap-1">
+                  <span className="pb-1 text-sm font-bold text-coffee-brown/70">R$</span>
+                  <span className="font-serif text-4xl font-bold tabular-nums leading-none tracking-tight md:text-[2.75rem]">{product.price}</span>
+                  <span className="pb-1.5 text-[10px] font-semibold uppercase tracking-widest text-coffee-brown/45">un.</span>
+                </div>
+                <p className="mt-3 text-center text-[10px] font-black uppercase tracking-[0.2em] text-coffee-accent">{product.shipping}</p>
+              </div>
+
+              <ul className="flex min-h-0 flex-1 flex-col gap-2 border-t border-coffee-brown/[0.1] pt-4 text-left md:gap-2.5 md:pt-5">
+                {product.features.map((feature, fIdx) => (
+                  <li key={fIdx} className="flex gap-3">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-coffee-dark/10 text-coffee-dark">
+                      <Check className="h-3 w-3" strokeWidth={3} aria-hidden />
+                    </span>
+                    <span className="min-w-0 flex-1 text-[13px] leading-snug text-coffee-brown/85 md:text-sm">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                type="button"
+                onClick={() =>
+                  onAddToCart({
+                    kind: 'product',
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    shipping: product.shipping,
+                    notes: product.notes,
+                  })
+                }
+                className="mt-auto w-full shrink-0 rounded-2xl bg-coffee-dark py-3.5 text-[10px] font-black uppercase tracking-[0.28em] text-coffee-beige shadow-md transition-all hover:bg-coffee-brown active:scale-[0.99]"
+              >
+                Adicionar ao carrinho
+              </button>
             </motion.div>
           ))}
         </div>
-        <p className="text-center text-[10px] text-coffee-brown/45 mt-3 md:hidden shrink-0">
-          Deslize para ver os cafés
-        </p>
+
+        <div className="mt-3 shrink-0 space-y-1 text-center">
+          <p className="text-[9px] font-black uppercase tracking-[0.28em] text-coffee-brown/45 md:text-[10px]">
+            Preço por saca · Frete calculado no checkout
+          </p>
+          <p className="text-[10px] text-coffee-brown/40 md:hidden">Deslize para ver os cafés</p>
+        </div>
       </div>
     </section>
   );
@@ -1556,9 +1604,11 @@ export default function App() {
                         <div className="min-w-0">
                           <h4 className="font-serif text-xl text-coffee-dark">{item.name}</h4>
                           <p className="text-sm text-coffee-brown/60">
-                            {item.kind === 'product' ? 'Café especial' : 'Monte Club · assinatura mensal'}
+                            {item.kind === 'product'
+                              ? `Café especial${item.shipping ? ` · ${item.shipping}` : ''}`
+                              : 'Monte Club · assinatura mensal'}
                           </p>
-                          <p className="text-coffee-accent font-bold mt-2">R$ {item.price}</p>
+                          <p className="mt-2 font-bold text-coffee-accent">R$ {item.price}</p>
                         </div>
                         <button 
                           onClick={() => removeFromCart(idx)}
