@@ -123,6 +123,13 @@ const Navbar = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const { user, profile } = useAuth();
+  const navLinks = [
+    { href: '#home', label: 'Início' },
+    { href: '#origin', label: 'Origem' },
+    { href: '#products', label: 'Cafés' },
+    { href: '#monte-club', label: 'Monte Club' },
+    { href: '#story', label: 'Nossa História' },
+  ];
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -153,91 +160,125 @@ const Navbar = ({
   }, [isOpen]);
 
   return (
-    <nav className={`fixed top-0 w-full z-50 glass-nav transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
-      <div className="max-w-7xl mx-auto px-6 md:px-8 h-[4.5rem] md:h-[6rem] flex items-center justify-between">
-        <a href="#home" className="hover:opacity-80 transition-opacity shrink-0">
-          <Logo className="h-[7.5rem] md:h-[10.5rem]" moss />
-        </a>
+    <motion.nav
+      initial={{ y: -26, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.55, ease: 'easeOut' }}
+      className={`fixed top-0 w-full z-50 glass-nav transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}
+    >
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-coffee-dark/35 to-transparent" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 h-[4.75rem] md:h-[6.1rem] flex items-center justify-between gap-3">
+        <motion.a
+          href="#home"
+          className="hover:opacity-90 transition-opacity shrink-0"
+          whileHover={{ y: -1.5, scale: 1.015 }}
+          transition={{ duration: 0.22 }}
+        >
+          <Logo className="h-[6.75rem] md:h-[9rem]" moss />
+        </motion.a>
 
-        <div className="hidden md:flex items-center gap-12 text-[11px] font-black uppercase tracking-[0.3em] text-coffee-brown/80">
-          <a href="#home" className="hover:text-coffee-dark transition-colors">Início</a>
-          <a href="#origin" className="hover:text-coffee-dark transition-colors">Origem</a>
-          <a href="#products" className="hover:text-coffee-dark transition-colors">Cafés</a>
-          <a href="#monte-club" className="hover:text-coffee-dark transition-colors">Monte Club</a>
-          <a href="#story" className="hover:text-coffee-dark transition-colors">Nossa História</a>
+        <div className="hidden md:flex items-center gap-6 lg:gap-9">
+          {navLinks.map((link, idx) => (
+            <motion.a
+              key={link.href}
+              href={link.href}
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: 0.06 + idx * 0.04 }}
+              className="nav-link-premium"
+            >
+              {link.label}
+            </motion.a>
+          ))}
         </div>
 
-        <div className="flex items-center gap-4 md:gap-8">
+        <div className="flex items-center gap-2 md:gap-3">
           {user ? (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 md:gap-3">
               {profile?.role === 'admin' && (
-                <a href="#admin" className="p-2 text-coffee-accent hover:opacity-70 transition-opacity" title="Painel Admin">
-                  <LayoutDashboard size={24} />
+                <a href="#admin" className="icon-chip h-10 w-10 md:h-11 md:w-11 text-coffee-accent" title="Painel Admin">
+                  <LayoutDashboard size={20} />
                 </a>
               )}
-              <button 
+              <button
+                type="button"
                 onClick={logout}
-                className="p-2 text-coffee-dark hover:opacity-70 transition-opacity"
+                className="icon-chip h-10 w-10 md:h-11 md:w-11"
                 title="Sair"
               >
-                <LogOut size={24} />
+                <LogOut size={20} />
               </button>
-              <img src={user.photoURL || ''} alt="User" className="w-8 h-8 rounded-full border border-coffee-brown/10 hidden sm:block" />
+              <img src={user.photoURL || ''} alt="User" className="w-9 h-9 rounded-full border border-coffee-brown/15 hidden sm:block shadow-sm" />
             </div>
           ) : (
-            <button 
+            <button
+              type="button"
               onClick={onOpenLogin}
-              className="p-2 text-coffee-dark hover:opacity-70 transition-opacity"
+              className="icon-chip h-10 w-10 md:h-11 md:w-11"
               title="Entrar"
             >
-              <User size={24} />
+              <User size={20} />
             </button>
           )}
 
           <button
             type="button"
             onClick={onOpenContact}
-            className="flex items-center gap-2 px-2.5 md:px-3 py-2 rounded-full border border-coffee-brown/15 text-coffee-dark text-[10px] font-black uppercase tracking-widest hover:bg-white/60 transition-colors"
+            className="icon-chip gap-2 px-3 md:px-4 h-10 md:h-11 text-[10px] font-black uppercase tracking-[0.22em]"
             title="Contato"
           >
-            <Mail size={18} strokeWidth={2.25} />
-            <span className="hidden md:inline">Contato</span>
+            <Mail size={17} strokeWidth={2.2} />
+            <span className="hidden lg:inline">Contato</span>
           </button>
 
           <button
             type="button"
             onClick={onOpenCart}
-            className="relative p-2 text-coffee-dark hover:opacity-70 transition-opacity"
+            className="icon-chip relative h-10 w-10 md:h-11 md:w-11"
             title="Carrinho"
           >
-            <ShoppingBag size={24} />
+            <ShoppingBag size={20} />
             {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-coffee-accent text-white text-[10px] font-bold min-w-[1.25rem] h-5 px-1 flex items-center justify-center rounded-full">
+              <span className="absolute -top-1 -right-1 bg-coffee-accent text-white text-[10px] font-bold min-w-[1.25rem] h-5 px-1 flex items-center justify-center rounded-full shadow-md">
                 {cartCount > 99 ? '99+' : cartCount}
               </span>
             )}
           </button>
 
-          <button type="button" className="md:hidden text-coffee-dark" onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? <X size={28} /> : <Menu size={28} />}
+          <button
+            type="button"
+            className="icon-chip h-10 w-10 md:hidden"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label={isOpen ? 'Fechar menu' : 'Abrir menu'}
+          >
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>
 
       <AnimatePresence>
         {isOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="md:hidden bg-coffee-beige border-b border-coffee-brown/10 overflow-hidden"
+          <motion.div
+            initial={{ opacity: 0, y: -18, scale: 0.985 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -18, scale: 0.985 }}
+            transition={{ duration: 0.28, ease: 'easeOut' }}
+            className="md:hidden border-t border-coffee-brown/10 overflow-hidden bg-coffee-beige/95 backdrop-blur-2xl"
           >
-            <div className="p-12 flex flex-col gap-10 text-center">
-              <a href="#home" onClick={() => setIsOpen(false)} className="text-3xl font-serif font-bold">Início</a>
-              <a href="#origin" onClick={() => setIsOpen(false)} className="text-3xl font-serif font-bold">Origem</a>
-              <a href="#products" onClick={() => setIsOpen(false)} className="text-3xl font-serif font-bold">Cafés</a>
-              <a href="#monte-club" onClick={() => setIsOpen(false)} className="text-3xl font-serif font-bold">Monte Club</a>
-              <a href="#story" onClick={() => setIsOpen(false)} className="text-3xl font-serif font-bold">Nossa História</a>
+            <div className="p-10 pt-8 flex flex-col gap-7 text-center">
+              {navLinks.map((link, idx) => (
+                <motion.a
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.24, delay: idx * 0.045 }}
+                  className="text-[1.75rem] font-serif font-medium tracking-tight text-coffee-dark"
+                >
+                  {link.label}
+                </motion.a>
+              ))}
               <button
                 type="button"
                 onClick={() => {
@@ -262,7 +303,7 @@ const Navbar = ({
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </motion.nav>
   );
 };
 
@@ -478,7 +519,7 @@ const Products = ({ onAddToCart }: { onAddToCart: (item: Record<string, unknown>
               <button
                 type="button"
                 onClick={() => setOpenProductId(product.id)}
-                className="group relative w-full overflow-hidden rounded-2xl border border-coffee-brown/[0.1] bg-coffee-beige shadow-[0_12px_36px_-14px_rgba(61,43,31,0.22)] ring-1 ring-coffee-brown/[0.04] transition-all duration-300 hover:border-coffee-brown/25 hover:shadow-[0_18px_44px_-12px_rgba(61,43,31,0.28)] focus:outline-none focus-visible:ring-2 focus-visible:ring-coffee-accent focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                className="premium-card group relative w-full overflow-hidden rounded-2xl border border-coffee-brown/[0.1] bg-coffee-beige shadow-[0_12px_36px_-14px_rgba(61,43,31,0.22)] ring-1 ring-coffee-brown/[0.04] transition-all duration-300 hover:border-coffee-brown/25 hover:shadow-[0_18px_44px_-12px_rgba(61,43,31,0.28)] focus:outline-none focus-visible:ring-2 focus-visible:ring-coffee-accent focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 aria-label={`Abrir detalhes de ${product.name}`}
               >
                 <div className="aspect-[5/6] max-h-[min(42vw,228px)] w-full overflow-hidden sm:max-h-[min(38vw,248px)] md:max-h-[min(28vh,216px)]">
@@ -673,7 +714,7 @@ const MonteClub = ({ onAddToCart }: { onAddToCart: (plan: any) => void }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.12, duration: 0.75 }}
-              className={`group relative flex h-full min-h-[min(520px,82vh)] flex-col shrink-0 w-[min(88vw,320px)] snap-center rounded-[1.75rem] p-5 pt-7 md:min-h-[540px] md:w-auto md:p-6 md:pt-8 transition-all duration-300 min-w-0 ${
+              className={`premium-card group relative flex h-full min-h-[min(520px,82vh)] flex-col shrink-0 w-[min(88vw,320px)] snap-center rounded-[1.75rem] p-5 pt-7 md:min-h-[540px] md:w-auto md:p-6 md:pt-8 transition-all duration-300 min-w-0 ${
                 plan.popular
                   ? 'z-10 bg-gradient-to-b from-coffee-dark via-coffee-dark to-coffee-green text-coffee-beige shadow-[0_24px_48px_-12px_rgba(14,55,12,0.45)] ring-2 ring-coffee-accent/35'
                   : 'bg-white border border-coffee-brown/[0.12] shadow-[0_12px_40px_-8px_rgba(61,43,31,0.12)] hover:border-coffee-brown/20 hover:shadow-[0_16px_48px_-12px_rgba(61,43,31,0.18)]'
@@ -865,7 +906,7 @@ const Experience = () => (
           initial={{ opacity: 0, scale: 0.96 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="rounded-2xl md:rounded-[2rem] overflow-hidden coffee-shadow aspect-square min-h-0"
+          className="premium-card rounded-2xl md:rounded-[2rem] overflow-hidden coffee-shadow aspect-square min-h-0"
         >
           <img
             src="https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&q=80&w=1000"
@@ -879,7 +920,7 @@ const Experience = () => (
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.15 }}
-          className="rounded-2xl md:rounded-[2rem] overflow-hidden coffee-shadow aspect-square min-h-0 translate-y-4 md:translate-y-6 lg:translate-y-8"
+          className="premium-card rounded-2xl md:rounded-[2rem] overflow-hidden coffee-shadow aspect-square min-h-0 translate-y-4 md:translate-y-6 lg:translate-y-8"
         >
           <img
             src="https://images.unsplash.com/photo-1517705008128-361805f42e86?auto=format&fit=crop&q=80&w=1000"
@@ -1621,7 +1662,7 @@ export default function App() {
                 <div className="space-y-4">
                   <a
                     href={`mailto:${CONTACT_EMAIL}`}
-                    className="flex items-center gap-4 p-4 rounded-2xl bg-white/70 border border-coffee-brown/10 hover:border-coffee-dark/20 transition-colors"
+                    className="premium-card flex items-center gap-4 p-4 rounded-2xl bg-white/70 border border-coffee-brown/10 hover:border-coffee-dark/20 transition-colors"
                   >
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-coffee-dark/10 text-coffee-dark">
                       <Mail size={20} />
@@ -1633,7 +1674,7 @@ export default function App() {
                   </a>
                   <a
                     href={`tel:${CONTACT_PHONE_E164.replace(/\s/g, '')}`}
-                    className="flex items-center gap-4 p-4 rounded-2xl bg-white/70 border border-coffee-brown/10 hover:border-coffee-dark/20 transition-colors"
+                    className="premium-card flex items-center gap-4 p-4 rounded-2xl bg-white/70 border border-coffee-brown/10 hover:border-coffee-dark/20 transition-colors"
                   >
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-coffee-dark/10 text-coffee-dark">
                       <Phone size={20} />
